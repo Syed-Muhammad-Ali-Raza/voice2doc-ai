@@ -187,15 +187,19 @@ Toggle via `VITE_USE_MOCK_API` in `.env`. When `false`, adapters should call `VI
 - Optional `OPENAI_API_KEY` for Whisper + GPT; otherwise mock STT/LLM with real job flow
 - Client polls `GET /api/ai/jobs/:id`
 
-### Phase 3 — Monetization (current)
+### Phase 3 — Monetization (complete)
 - Stripe Checkout for Pro/Business when `STRIPE_SECRET_KEY` + price IDs are set
 - Webhook `POST /api/billing/webhook` syncs plan from subscription events
 - Customer portal (`POST /api/billing/portal`)
 - Without Stripe keys: local plan switch (dev/demo fallback)
 - Success/cancel return URLs → `/app/billing?checkout=…`
 
-### Phase 4 — Teams
-- Workspaces, roles, shared docs, Business admin
+### Phase 4 — Teams (current)
+- Workspaces with roles: owner / admin / member
+- Invite by registered email; share documents into a workspace
+- Document list includes personal + shared workspace docs
+- Admin snapshot (member/doc counts) for owners & admins
+- Create workspace requires Pro or Business plan
 
 ### Phase 5 — Integrations
 - Zoom / Meet / Teams, Notion, Google Docs (from PRD “Future”)

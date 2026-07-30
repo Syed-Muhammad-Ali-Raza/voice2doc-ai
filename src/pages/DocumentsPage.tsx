@@ -1,18 +1,29 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Copy, Grid3X3, List, Share2, Star, Trash2 } from 'lucide-react'
 import { GlassCard } from '../components/GlassCard'
 import { env } from '../config/env'
 import { DOCUMENT_TYPES } from '../lib/types'
 import { documentService } from '../services/documentService'
+import { workspaceService, type Workspace } from '../services/workspaceService'
+import { useAuthStore } from '../store/auth'
 import { useDocsStore } from '../store/docs'
 
 export function DocumentsPage() {
+  const user = useAuthStore((s) => s.user)
   const documents = useDocsStore((s) => s.documents)
   const deleteDocument = useDocsStore((s) => s.deleteDocument)
+  const updateDocument = useDocsStore((s) => s.updateDocument)
   const duplicateDocument = useDocsStore((s) => s.duplicateDocument)
   const toggleFavorite = useDocsStore((s) => s.toggleFavorite)
   const showToast = useDocsStore((s) => s.showToast)
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([])
+  const [shareDocId, setShareDocId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (env.useMockApi) return
+    void workspaceService.list().then(setWorkspaces).catch(() => undefined)
+  }, [])
 
   const removeDoc = async (id: string) => {
     try {
@@ -32,6 +43,17 @@ export function DocumentsPage() {
     } catch {
       toggleFavorite(id)
       showToast('Failed to update favorite')
+    }
+  }
+
+  const shareDoc = async (docId: string, workspaceId: string | null) => {
+    try {
+      const updated = await workspaceService.shareDocument(docId, workspaceId)
+      updateDocument(docId, { workspaceId: updated.workspaceId ?? null })
+      showToast(workspaceId ? 'Shared to workspace' : 'Removed from workspace')
+      setShareDocId(null)
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'Share failed')
     }
   }
 
@@ -58,12 +80,41 @@ export function DocumentsPage() {
     return list
   }, [documents, query, sort, filterType, favoritesOnly])
 
+  const actions = (doc: (typeof documents)[0]) => (
+    <div className="mt-4 flex flex-wrap gap-1">
+      <button type="button" className="btn-ghost" onClick={() => toggleFav(doc.id)} aria-label="Favorite">
+        <Star size={16} className={doc.favorite ? 'fill-accent text-accent' : ''} />
+      </button>
+      <button type="button" className="btn-ghost" onClick={() => duplicateDocument(doc.id)} aria-label="Duplicate">
+        <Copy size={16} />
+      </button>
+      {(!doc.ownerId || doc.ownerId === user?.id) && (
+        <button type="button" className="btn-ghost" onClick={() => setShareDocId(doc.id)} aria-label="Share">
+          <Share2 size={16} />
+        </button>
+      )}
+      <button
+        type="button"
+        className="btn-ghost"
+        onClick={async () => {
+          await navigator.clipboard.writeText(`${window.location.origin}/app/editor/${doc.id}`)
+          showToast('Share link copied')
+        }}
+      >
+        Link
+      </button>
+      <button type="button" className="btn-ghost text-danger" onClick={() => removeDoc(doc.id)}>
+        <Trash2 size={16} />
+      </button>
+    </div>
+  )
+
   return (
     <div className="mx-auto max-w-6xl space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl font-semibold text-ink dark:text-dark-ink">Documents</h1>
-          <p className="mt-1 text-muted">{filtered.length} items</p>
+          <p className="mt-1 text-muted">{filtered.length} items · includes workspace shares</p>
         </div>
         <div className="flex gap-2">
           <button type="button" className={`btn-ghost ${view === 'grid' ? 'bg-black/5 dark:bg-white/10' : ''}`} onClick={() => setView('grid')}>
@@ -96,6 +147,34 @@ export function DocumentsPage() {
         </label>
       </GlassCard>
 
+      {shareDocId && (
+        <GlassCard className="space-y-3 p-4">
+          <p className="text-sm font-medium text-ink dark:text-dark-ink">Share to workspace</p>
+          {workspaces.length === 0 ? (
+            <p className="text-sm text-muted">
+              No workspaces yet.{' '}
+              <Link to="/app/workspaces" className="text-accent underline">
+                Create one
+              </Link>
+            </p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {workspaces.map((ws) => (
+                <button key={ws.id} type="button" className="btn-secondary" onClick={() => shareDoc(shareDocId, ws.id)}>
+                  {ws.name}
+                </button>
+              ))}
+              <button type="button" className="btn-ghost" onClick={() => shareDoc(shareDocId, null)}>
+                Unshare
+              </button>
+            </div>
+          )}
+          <button type="button" className="btn-ghost" onClick={() => setShareDocId(null)}>
+            Cancel
+          </button>
+        </GlassCard>
+      )}
+
       {view === 'grid' ? (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((doc) => (
@@ -104,29 +183,10 @@ export function DocumentsPage() {
                 <p className="font-semibold text-ink dark:text-dark-ink">{doc.title}</p>
                 <p className="mt-1 text-xs text-muted">
                   {doc.type} · {new Date(doc.updatedAt).toLocaleDateString()}
+                  {doc.workspaceId ? ' · Shared' : ''}
                 </p>
               </Link>
-              <div className="mt-4 flex flex-wrap gap-1">
-                <button type="button" className="btn-ghost" onClick={() => toggleFav(doc.id)} aria-label="Favorite">
-                  <Star size={16} className={doc.favorite ? 'fill-accent text-accent' : ''} />
-                </button>
-                <button type="button" className="btn-ghost" onClick={() => duplicateDocument(doc.id)} aria-label="Duplicate">
-                  <Copy size={16} />
-                </button>
-                <button
-                  type="button"
-                  className="btn-ghost"
-                  onClick={async () => {
-                    await navigator.clipboard.writeText(`${window.location.origin}/app/editor/${doc.id}`)
-                    showToast('Share link copied')
-                  }}
-                >
-                  <Share2 size={16} />
-                </button>
-                <button type="button" className="btn-ghost text-danger" onClick={() => removeDoc(doc.id)}>
-                  <Trash2 size={16} />
-                </button>
-              </div>
+              {actions(doc)}
             </GlassCard>
           ))}
         </div>
@@ -136,17 +196,12 @@ export function DocumentsPage() {
             <div key={doc.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
               <Link to={`/app/editor/${doc.id}`} className="min-w-0 flex-1">
                 <p className="font-medium text-ink dark:text-dark-ink">{doc.title}</p>
-                <p className="text-xs text-muted">{doc.type}</p>
+                <p className="text-xs text-muted">
+                  {doc.type}
+                  {doc.workspaceId ? ' · Shared' : ''}
+                </p>
               </Link>
-              <button type="button" className="btn-ghost" onClick={() => toggleFav(doc.id)}>
-                <Star size={16} className={doc.favorite ? 'fill-accent text-accent' : ''} />
-              </button>
-              <button type="button" className="btn-ghost" onClick={() => duplicateDocument(doc.id)}>
-                <Copy size={16} />
-              </button>
-              <button type="button" className="btn-ghost text-danger" onClick={() => removeDoc(doc.id)}>
-                <Trash2 size={16} />
-              </button>
+              {actions(doc)}
             </div>
           ))}
         </GlassCard>

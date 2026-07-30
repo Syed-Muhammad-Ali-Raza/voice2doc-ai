@@ -12,6 +12,7 @@ import {
   Settings,
   Upload,
   User,
+  Users,
   X,
   LayoutTemplate,
 } from 'lucide-react'
@@ -23,6 +24,7 @@ import { useAuthStore } from '../store/auth'
 const nav = [
   { to: '/app', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/app/documents', label: 'Documents', icon: FileText },
+  { to: '/app/workspaces', label: 'Workspaces', icon: Users },
   { to: '/app/record', label: 'Record', icon: Mic },
   { to: '/app/upload', label: 'Upload', icon: Upload },
   { to: '/app/templates', label: 'Templates', icon: LayoutTemplate },
