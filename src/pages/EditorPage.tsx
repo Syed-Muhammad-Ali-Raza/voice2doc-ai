@@ -19,6 +19,7 @@ import { GlassCard } from '../components/GlassCard'
 import { env } from '../config/env'
 import { aiService } from '../services/aiService'
 import { documentService } from '../services/documentService'
+import { integrationService } from '../services/integrationService'
 import { useDocsStore } from '../store/docs'
 import { useSettingsStore } from '../store/auth'
 
@@ -148,12 +149,43 @@ export function EditorPage() {
               <summary className="btn-secondary list-none [&::-webkit-details-marker]:hidden">
                 <Download size={16} /> Export
               </summary>
-              <div className="glass absolute right-0 z-20 mt-2 w-40 overflow-hidden p-1">
+              <div className="glass absolute right-0 z-20 mt-2 w-48 overflow-hidden p-1">
                 {(['txt', 'md', 'pdf', 'docx'] as const).map((f) => (
                   <button key={f} type="button" className="btn-ghost w-full justify-start" onClick={() => exportFile(f)}>
                     .{f}
                   </button>
                 ))}
+                <div className="my-1 border-t border-border dark:border-dark-border" />
+                <button
+                  type="button"
+                  className="btn-ghost w-full justify-start"
+                  onClick={async () => {
+                    try {
+                      const result = await integrationService.exportDoc('notion', doc.id)
+                      showToast(result.message || 'Sent to Notion')
+                      if (result.externalUrl) window.open(result.externalUrl, '_blank', 'noopener')
+                    } catch (err) {
+                      showToast(err instanceof Error ? err.message : 'Notion export failed — connect in Integrations')
+                    }
+                  }}
+                >
+                  Send to Notion
+                </button>
+                <button
+                  type="button"
+                  className="btn-ghost w-full justify-start"
+                  onClick={async () => {
+                    try {
+                      const result = await integrationService.exportDoc('google_docs', doc.id)
+                      showToast(result.message || 'Sent to Google Docs')
+                      if (result.externalUrl) window.open(result.externalUrl, '_blank', 'noopener')
+                    } catch (err) {
+                      showToast(err instanceof Error ? err.message : 'Google Docs export failed — connect in Integrations')
+                    }
+                  }}
+                >
+                  Send to Google Docs
+                </button>
               </div>
             </details>
           </div>

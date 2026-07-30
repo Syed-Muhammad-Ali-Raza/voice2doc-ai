@@ -2,7 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-**Phase 4 (current):** Team workspaces, roles, and shared documents.
+**Phase 5 (current):** Integrations — Zoom, Google Meet, Microsoft Teams, Notion, Google Docs.
 
 ---
 
@@ -25,41 +25,58 @@ npm run dev
 
 | Phase | Status |
 |-------|--------|
-| 0 Demo UI | Done |
-| 1 Auth + 10 free AI docs | Done |
-| 2 Audio jobs + STT/LLM | Done |
-| 3 Stripe billing | Done |
-| **4 Teams / workspaces** | **Current** |
-| 5 Integrations | Next |
+| 0–4 | Done (UI, auth, jobs, Stripe, teams) |
+| **5 Integrations** | **Current** |
 
 ---
 
-## Phase 4 — Teams
+## Phase 5 — Integrations
 
-1. Upgrade to **Pro** or **Business** (Billing).
-2. Open **Workspaces** → create a team.
-3. Invite members by email (they must already have an account).
-4. On **Documents**, use Share → pick a workspace.
-5. Teammates see shared docs in their library and under the workspace.
+Open **Integrations** in the sidebar:
 
-### Roles
+1. **Connect** Zoom / Meet / Teams / Notion / Google Docs (works in demo mode without keys).
+2. **Import meeting** → creates a Meeting Notes draft.
+3. In the **editor**, Export → **Send to Notion / Google Docs**.
 
-| Role | Can |
-|------|-----|
-| Owner | Everything + delete workspace |
-| Admin | Invite/remove members, admin stats |
-| Member | View/edit shared docs |
+### Optional OAuth / live export (`server/.env`)
+
+```env
+APP_URL=http://localhost:5173
+API_PUBLIC_URL=http://localhost:3001
+
+# Zoom
+ZOOM_CLIENT_ID=
+ZOOM_CLIENT_SECRET=
+
+# Google (Meet + Docs)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Microsoft Teams
+MICROSOFT_CLIENT_ID=
+MICROSOFT_CLIENT_SECRET=
+
+# Notion OAuth
+NOTION_CLIENT_ID=
+NOTION_CLIENT_SECRET=
+
+# Optional live Notion page create
+NOTION_INTERNAL_TOKEN=
+NOTION_PARENT_PAGE_ID=
+```
+
+Without these, Connect uses **demo mode** and still stores connection state in SQLite.
 
 ### API
 
 | Method | Path |
 |--------|------|
-| GET/POST | `/api/workspaces` |
-| GET/PATCH/DELETE | `/api/workspaces/:id` |
-| GET/POST | `/api/workspaces/:id/members` |
-| GET | `/api/workspaces/:id/documents` |
-| GET | `/api/workspaces/:id/admin` |
-| POST | `/api/documents/:id/share` |
+| GET | `/api/integrations` |
+| POST | `/api/integrations/:provider/connect` |
+| GET | `/api/integrations/:provider/callback` |
+| DELETE | `/api/integrations/:provider` |
+| POST | `/api/integrations/:provider/export` |
+| POST | `/api/integrations/:provider/import-meeting` |
 
 ---
 
