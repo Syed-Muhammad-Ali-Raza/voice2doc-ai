@@ -20,6 +20,8 @@ import { RegisterPage } from './pages/RegisterPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { TemplatesPage } from './pages/TemplatesPage'
 import { UploadPage } from './pages/UploadPage'
+import { WorkspacesPage } from './pages/WorkspacesPage'
+import { WorkspaceDetailPage } from './pages/WorkspaceDetailPage'
 
 export default function App() {
   return (
@@ -40,6 +42,8 @@ export default function App() {
           <Route element={<AppShell />}>
             <Route index element={<DashboardPage />} />
             <Route path="documents" element={<DocumentsPage />} />
+            <Route path="workspaces" element={<WorkspacesPage />} />
+            <Route path="workspaces/:id" element={<WorkspaceDetailPage />} />
             <Route path="record" element={<RecordPage />} />
             <Route path="upload" element={<UploadPage />} />
             <Route path="processing" element={<ProcessingPage />} />

@@ -36,7 +36,10 @@ export interface DocItem {
   updatedAt: string
   language: Language
   tone: Tone
+  ownerId?: string
+  workspaceId?: string | null
 }
+
 
 export interface ProcessConfig {
   type: DocumentType
