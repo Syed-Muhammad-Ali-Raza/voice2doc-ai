@@ -2,8 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-Phase 2 upscale: audio upload → job queue → STT → LLM formatting → polled progress.  
-Phase 1 auth (JWT + SQLite + free trial enforcement) is included.
+**Phase 3 (current):** Stripe Checkout + webhooks for paid plans, with local billing fallback when Stripe isn’t configured.
 
 ---
 
@@ -17,66 +16,61 @@ npm run dev
 
 | Process | URL |
 |---------|-----|
-| Web | `http://localhost:5173` (or next free port) |
+| Web | `http://localhost:5173` |
 | API | `http://localhost:3001` |
 
-| Script | Purpose |
-|--------|---------|
-| `npm run dev` | Web + API |
-| `npm run server` | API only |
-| `npm run build` | Frontend production build |
-
-### Environment
-
-**Root `.env`**
-```
-VITE_USE_MOCK_API=false
-VITE_API_BASE_URL=http://localhost:3001/api
-```
-
-**`server/.env`**
-```
-PORT=3001
-JWT_SECRET=change-me
-CORS_ORIGIN=http://localhost:5173,http://localhost:5174
-
-# Optional — enables real Whisper + GPT formatting
-# OPENAI_API_KEY=sk-...
-```
-
-Without `OPENAI_API_KEY`, the pipeline still runs end-to-end with **mock STT/LLM** (audio is stored and stages are real).
-
 ---
 
-## Phase 2 pipeline
-
-```
-Record/Upload → POST /api/ai/jobs (multipart audio + config)
-             → job queued (SQLite)
-             → Uploading → Transcribing → Understanding → Formatting → Finalizing
-             → GET /api/ai/jobs/:id (poll)
-             → document saved + trial consumed
-```
-
-Audio files land in `server/uploads/` (gitignored). Job rows live in SQLite (`jobs`, `audio_assets`).
-
----
-
-## Phase checklist
+## Phase overview
 
 | Phase | Status |
 |-------|--------|
 | 0 Demo UI | Done |
-| 1 Real accounts + trial enforcement | Done |
-| 2 Audio jobs + STT/LLM pipeline | **Current** |
-| 3 Stripe | Next |
-| 4 Teams | Planned |
+| 1 Auth + free trial (10 docs) | Done |
+| 2 Audio jobs + STT/LLM pipeline | Done |
+| **3 Stripe billing** | **Current** |
+| 4 Teams | Next |
 | 5 Integrations | Planned |
-
-Details: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)**.
 
 ---
 
-## Design
+## Stripe setup (Phase 3)
 
-Studio Glass — amber `#C47B2D`, Fraunces + DM Sans, frosted panels.
+1. Create Products/Prices in [Stripe Dashboard](https://dashboard.stripe.com) (Pro $19/mo, Business $49/mo).
+2. Add to `server/.env`:
+
+```env
+APP_URL=http://localhost:5173
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_PRICE_PRO=price_...
+STRIPE_PRICE_BUSINESS=price_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+3. Forward webhooks locally:
+
+```bash
+stripe listen --forward-to localhost:3001/api/billing/webhook
+```
+
+4. Restart `npm run server`. Health should show `"stripe": true`.
+
+**Without Stripe keys**, Billing still works in **local mode** (instant plan switch for demos).
+
+---
+
+## API (billing)
+
+| Method | Path | Notes |
+|--------|------|-------|
+| GET | `/api/billing/config` | Public — is Stripe enabled? |
+| GET | `/api/billing/entitlements` | Auth — plan + trials + stripe status |
+| POST | `/api/billing/checkout` | Auth — Checkout URL or local switch |
+| POST | `/api/billing/portal` | Auth — Customer portal |
+| POST | `/api/billing/webhook` | Stripe signature — raw body |
+
+---
+
+## Docs
+
+See **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** for full system design.

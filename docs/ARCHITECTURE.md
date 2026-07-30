@@ -180,15 +180,19 @@ Toggle via `VITE_USE_MOCK_API` in `.env`. When `false`, adapters should call `VI
 - Documents CRUD + billing plan row
 - Frontend: `VITE_USE_MOCK_API=false`
 
-### Phase 2 — Real pipeline (current)
+### Phase 2 — Real pipeline (complete)
 - Multipart audio upload to `server/uploads`
 - `jobs` + `audio_assets` tables; async worker
 - Stages: Uploading → Transcribing → Understanding → Formatting → Finalizing
 - Optional `OPENAI_API_KEY` for Whisper + GPT; otherwise mock STT/LLM with real job flow
 - Client polls `GET /api/ai/jobs/:id`
 
-### Phase 3 — Monetization
-- Stripe Checkout + webhooks; replace local `/billing/checkout`
+### Phase 3 — Monetization (current)
+- Stripe Checkout for Pro/Business when `STRIPE_SECRET_KEY` + price IDs are set
+- Webhook `POST /api/billing/webhook` syncs plan from subscription events
+- Customer portal (`POST /api/billing/portal`)
+- Without Stripe keys: local plan switch (dev/demo fallback)
+- Success/cancel return URLs → `/app/billing?checkout=…`
 
 ### Phase 4 — Teams
 - Workspaces, roles, shared docs, Business admin
