@@ -22,6 +22,7 @@ import { TemplatesPage } from './pages/TemplatesPage'
 import { UploadPage } from './pages/UploadPage'
 import { WorkspacesPage } from './pages/WorkspacesPage'
 import { WorkspaceDetailPage } from './pages/WorkspaceDetailPage'
+import { IntegrationsPage } from './pages/IntegrationsPage'
 
 export default function App() {
   return (
@@ -49,6 +50,7 @@ export default function App() {
             <Route path="processing" element={<ProcessingPage />} />
             <Route path="editor/:id" element={<EditorPage />} />
             <Route path="templates" element={<TemplatesPage />} />
+            <Route path="integrations" element={<IntegrationsPage />} />
             <Route path="billing" element={<BillingPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />

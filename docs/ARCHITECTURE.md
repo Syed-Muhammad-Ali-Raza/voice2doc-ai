@@ -194,15 +194,20 @@ Toggle via `VITE_USE_MOCK_API` in `.env`. When `false`, adapters should call `VI
 - Without Stripe keys: local plan switch (dev/demo fallback)
 - Success/cancel return URLs → `/app/billing?checkout=…`
 
-### Phase 4 — Teams (current)
+### Phase 4 — Teams (complete)
 - Workspaces with roles: owner / admin / member
 - Invite by registered email; share documents into a workspace
 - Document list includes personal + shared workspace docs
 - Admin snapshot (member/doc counts) for owners & admins
 - Create workspace requires Pro or Business plan
 
-### Phase 5 — Integrations
-- Zoom / Meet / Teams, Notion, Google Docs (from PRD “Future”)
+### Phase 5 — Integrations (current)
+- Providers: Zoom, Google Meet, Microsoft Teams, Notion, Google Docs
+- Connect/disconnect (demo mode without vendor OAuth keys)
+- OAuth redirect flow when client IDs/secrets are configured
+- Import meeting → creates Meeting Notes draft
+- Export document → Notion / Google Docs (demo URL or live Notion with `NOTION_INTERNAL_TOKEN`)
+- UI: `/app/integrations` + editor Export menu
 
 ---
 

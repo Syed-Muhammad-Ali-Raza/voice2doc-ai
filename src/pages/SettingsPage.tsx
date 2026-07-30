@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { GlassCard } from '../components/GlassCard'
-import { useDocsStore } from '../store/docs'
 import { useSettingsStore } from '../store/auth'
 
 export function SettingsPage() {
@@ -17,7 +16,6 @@ export function SettingsPage() {
     setPrivacyAnalytics,
     plan,
   } = useSettingsStore()
-  const showToast = useDocsStore((s) => s.showToast)
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -51,14 +49,10 @@ export function SettingsPage() {
 
       <GlassCard className="space-y-3 p-5">
         <h2 className="font-semibold text-ink dark:text-dark-ink">Connected accounts</h2>
-        {['Google', 'Notion', 'Slack'].map((name) => (
-          <div key={name} className="flex items-center justify-between">
-            <span className="text-sm text-muted">{name}</span>
-            <button type="button" className="btn-secondary" onClick={() => showToast(`${name} connect is a demo stub`)}>
-              Connect
-            </button>
-          </div>
-        ))}
+        <p className="text-sm text-muted">Manage Zoom, Meet, Teams, Notion, and Google Docs.</p>
+        <Link to="/app/integrations" className="btn-primary w-full">
+          Open Integrations
+        </Link>
       </GlassCard>
 
       <GlassCard className="flex items-center justify-between p-5">

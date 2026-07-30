@@ -15,6 +15,7 @@ import {
   Users,
   X,
   LayoutTemplate,
+  Plug,
 } from 'lucide-react'
 import { BrandWordmark } from './Brand'
 import { Toast } from './Toast'
@@ -28,6 +29,7 @@ const nav = [
   { to: '/app/record', label: 'Record', icon: Mic },
   { to: '/app/upload', label: 'Upload', icon: Upload },
   { to: '/app/templates', label: 'Templates', icon: LayoutTemplate },
+  { to: '/app/integrations', label: 'Integrations', icon: Plug },
   { to: '/app/billing', label: 'Billing', icon: CreditCard },
   { to: '/app/settings', label: 'Settings', icon: Settings },
 ]

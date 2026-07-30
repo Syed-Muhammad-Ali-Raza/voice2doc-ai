@@ -12,13 +12,16 @@ import { authRouter } from './routes/auth.js'
 import { billingRouter, handleStripeWebhook } from './routes/billing.js'
 import { documentsRouter } from './routes/documents.js'
 import { aiRouter } from './routes/ai.js'
+import { integrationsOauthCallback, integrationsRouter } from './routes/integrations.js'
 import { requireAuth } from './middleware/auth.js'
 import { isStripeConfigured, migrateBillingColumns } from './lib/stripe.js'
 import { migrateTeamsColumns } from './lib/teams.js'
+import { migrateIntegrationsColumns } from './lib/integrations.js'
 import { workspacesRouter } from './routes/workspaces.js'
 
 migrateBillingColumns()
 migrateTeamsColumns()
+migrateIntegrationsColumns()
 
 const PORT = Number(process.env.PORT || 3001)
 const app = express()
@@ -30,7 +33,6 @@ app.use(
   }),
 )
 
-/** Stripe webhooks need the raw body — mount before express.json(). */
 app.post('/api/billing/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   try {
     const result = await handleStripeWebhook(
@@ -50,10 +52,11 @@ app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     service: 'voice2doc-api',
-    phase: 4,
+    phase: 5,
     openai: Boolean(process.env.OPENAI_API_KEY),
     stripe: isStripeConfigured(),
     teams: true,
+    integrations: true,
   })
 })
 
@@ -67,10 +70,12 @@ app.get('/api/billing/config', (_req, res) => {
     },
   })
 })
+app.get('/api/integrations/:provider/callback', integrationsOauthCallback)
 app.use('/api/billing', requireAuth, billingRouter)
 app.use('/api/workspaces', requireAuth, workspacesRouter)
 app.use('/api/documents', requireAuth, documentsRouter)
 app.use('/api/ai', requireAuth, aiRouter)
+app.use('/api/integrations', requireAuth, integrationsRouter)
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err)
@@ -79,5 +84,5 @@ app.use((err: unknown, _req: express.Request, res: express.Response, _next: expr
 })
 
 app.listen(PORT, () => {
-  console.log(`Voice2Doc API listening on http://localhost:${PORT} (phase 4, stripe=${isStripeConfigured()})`)
+  console.log(`Voice2Doc API listening on http://localhost:${PORT} (phase 5, stripe=${isStripeConfigured()})`)
 })
