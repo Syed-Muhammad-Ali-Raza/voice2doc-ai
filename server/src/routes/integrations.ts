@@ -11,6 +11,7 @@ import {
   type IntegrationProvider,
 } from '../lib/integrations.js'
 import { canAccessDocument } from '../lib/teams.js'
+import { ingestMeetingMemory } from '../lib/memory.js'
 
 export const integrationsRouter = Router()
 
@@ -308,12 +309,33 @@ integrationsRouter.post('/:provider/import-meeting', (req: AuthedRequest, res) =
      VALUES (?, ?, ?, 'Meeting Notes', ?, 'Professional', 'English', 0, ?, ?, NULL)`,
   ).run(id, req.user!.sub, title, content, now, now)
 
+  let memory: { meetingId: string; threadIds: string[]; actionCount: number } | null = null
+  try {
+    const transcript = [
+      `Host: Opening ${title}`,
+      `Decision: Capture follow-ups from this ${provider.replaceAll('_', ' ')} import.`,
+      `Host will circulate notes by end of day.`,
+      `Action: Review imported draft in Voice2Doc (Host)`,
+    ].join('\n')
+    memory = ingestMeetingMemory({
+      userId: req.user!.sub,
+      title,
+      transcript,
+      documentId: id,
+      sourceProvider: provider,
+      meetingAt: now,
+    })
+  } catch (err) {
+    console.error('Memory ingest skipped', err)
+  }
+
   res.status(201).json({
     ok: true,
     provider,
     mode: conn.access_token?.startsWith('demo-') ? 'demo' : 'simulated',
     documentId: id,
     title,
+    memory,
     message: 'Meeting notes draft created. Run AI polish from the editor if needed.',
   })
 })

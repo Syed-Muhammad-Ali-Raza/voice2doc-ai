@@ -2,7 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-**Phase 6 (current):** Localization & Studio Personalization — interface languages (incl. RTL), accent color atelier, typography pairs.
+**Phase 7 (current):** Meeting Memory Graph — speakers, action items, recurring decisions across meeting imports.
 
 ---
 
@@ -19,6 +19,11 @@ npm run dev
 | Web | `http://localhost:5173` |
 | API | `http://localhost:3001` |
 
+```bash
+npm test          # unit tests (Vitest)
+npm run test:watch
+```
+
 ---
 
 ## Phases
@@ -27,8 +32,8 @@ npm run dev
 |-------|--------|-------|
 | 0–4 | Done | UI, auth, jobs, Stripe, teams |
 | 5 Integrations | Done | Zoom / Meet / Teams / Notion / Docs |
-| **6 Localization & Studio Personalization** | **Current** | i18n, RTL, color + typography atelier |
-| 7 Meeting Memory Graph | Planned | Speakers, action continuity across meetings |
+| 6 Localization & Studio Personalization | Done | i18n, RTL, color + typography atelier |
+| **7 Meeting Memory Graph** | **Current** | Speakers, actions, recurring decisions |
 | 8 Document Atelier | Planned | Brand kits, tone DNA, export polish |
 | 9 Live Studio Collab | Planned | Presence, timestamp comments |
 | 10 Trust & Compliance Vault | Planned | Retention, audit, residency |
@@ -36,12 +41,28 @@ npm run dev
 
 ---
 
-## Public pages
+## Phase 7 — Meeting Memory Graph
 
-| Path | Page |
-|------|------|
-| `/privacy` | Privacy Policy |
-| `/help` | Help Center |
+Open **Memory** in the sidebar:
+
+1. View **threads** (decisions / actions) seeded from demo meetings or created when you **Import meeting**.
+2. Recurring decisions that appear in multiple meetings are linked automatically (fingerprint merge).
+3. Open a thread for linked meetings, speakers, and action owners/due hints.
+4. Mark threads resolved when done.
+
+### API
+
+| Method | Path |
+|--------|------|
+| GET | `/api/memory/threads` |
+| GET | `/api/memory/threads/:id` |
+| PATCH | `/api/memory/threads/:id` |
+| GET | `/api/memory/meetings` |
+| POST | `/api/memory/ingest` |
+
+### Unit tests
+
+Pure graph helpers live in `src/lib/memoryGraph.ts` (mirrored on the server). Run `npm test`.
 
 ---
 
@@ -77,6 +98,15 @@ Open **Settings** (or the language selector on the marketing header):
 ### Extending i18n
 
 Add keys to `src/i18n/locales/en.ts`, mirror them in other locale files, then call `t('group.key')` via `useT()`.
+
+---
+
+## Public pages
+
+| Path | Page |
+|------|------|
+| `/privacy` | Privacy Policy |
+| `/help` | Help Center |
 
 ---
 

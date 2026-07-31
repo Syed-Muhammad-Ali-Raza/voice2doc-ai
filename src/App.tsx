@@ -25,6 +25,7 @@ import { WorkspaceDetailPage } from './pages/WorkspaceDetailPage'
 import { IntegrationsPage } from './pages/IntegrationsPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { HelpCenterPage } from './pages/HelpCenterPage'
+import { MemoryPage } from './pages/MemoryPage'
 
 export default function App() {
   return (
@@ -55,6 +56,7 @@ export default function App() {
             <Route path="editor/:id" element={<EditorPage />} />
             <Route path="templates" element={<TemplatesPage />} />
             <Route path="integrations" element={<IntegrationsPage />} />
+            <Route path="memory" element={<MemoryPage />} />
             <Route path="billing" element={<BillingPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />

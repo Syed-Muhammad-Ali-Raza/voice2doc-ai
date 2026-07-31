@@ -20,6 +20,7 @@ export const ur: MessageTree = {
     upload: 'اپ لوڈ',
     templates: 'ٹیمپلیٹس',
     integrations: 'انٹیگریشنز',
+    memory: 'میموری',
     billing: 'بلنگ',
     settings: 'ترتیبات',
     features: 'خصوصیات',

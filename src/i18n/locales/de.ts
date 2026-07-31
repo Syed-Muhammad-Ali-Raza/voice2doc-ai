@@ -20,6 +20,7 @@ export const de: MessageTree = {
     upload: 'Hochladen',
     templates: 'Vorlagen',
     integrations: 'Integrationen',
+    memory: 'Memory',
     billing: 'Abrechnung',
     settings: 'Einstellungen',
     features: 'Funktionen',

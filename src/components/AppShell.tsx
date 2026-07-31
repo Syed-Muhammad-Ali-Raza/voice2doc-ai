@@ -16,6 +16,7 @@ import {
   X,
   LayoutTemplate,
   Plug,
+  Brain,
 } from 'lucide-react'
 import { BrandWordmark } from './Brand'
 import { Toast } from './Toast'
@@ -39,6 +40,7 @@ export function AppShell() {
     { to: '/app/upload', label: t('nav.upload'), icon: Upload },
     { to: '/app/templates', label: t('nav.templates'), icon: LayoutTemplate },
     { to: '/app/integrations', label: t('nav.integrations'), icon: Plug },
+    { to: '/app/memory', label: t('nav.memory'), icon: Brain },
     { to: '/app/billing', label: t('nav.billing'), icon: CreditCard },
     { to: '/app/settings', label: t('nav.settings'), icon: Settings },
   ]

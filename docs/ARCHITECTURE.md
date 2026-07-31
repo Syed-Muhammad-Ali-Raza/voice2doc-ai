@@ -209,7 +209,7 @@ Toggle via `VITE_USE_MOCK_API` in `.env`. When `false`, adapters should call `VI
 - Export document → Notion / Google Docs (demo URL or live Notion with `NOTION_INTERNAL_TOKEN`)
 - UI: `/app/integrations` + editor Export menu
 
-### Phase 6 — Localization & Studio Personalization (current)
+### Phase 6 — Localization & Studio Personalization (complete)
 **Unique product angle:** a “Studio Atelier” — users do not merely toggle dark mode; they compose a personal glass studio (accent + type + language) that re-skins the entire product, including marketing pages.
 
 | Capability | Detail |
@@ -221,14 +221,17 @@ Toggle via `VITE_USE_MOCK_API` in `.env`. When `false`, adapters should call `VI
 | Persistence | Zustand `v2d-settings` + `users.preferences_json` via `GET/PUT /api/preferences` |
 | Surfaces wired | Public header/footer, landing hero, auth, app shell nav, Settings atelier |
 
-### Phase 7 — Meeting Memory Graph (planned)
-Build a cross-meeting knowledge graph unique to Voice2Doc:
+### Phase 7 — Meeting Memory Graph (current)
+Cross-meeting knowledge graph unique to Voice2Doc:
 
-- Speaker diarization labels attached to transcript segments
+- Speaker diarization labels on transcript segments (`Speaker: …` parsing)
 - Action-item extraction with owner + due-date candidates
-- “Memory” view: open threads that span imported Zoom/Meet/Teams sessions
-- Deduplicate recurring decisions (“same decision, new meeting”)
-- API sketch: `GET /api/memory/threads`, `POST /api/memory/link`
+- Decision fingerprints merge recurring topics across Zoom/Meet/Teams imports
+- UI: `/app/memory` thread list + detail (linked meetings, actions, resolve)
+- Tables: `memory_meetings`, `memory_speakers`, `memory_segments`, `memory_threads`, `memory_thread_links`, `memory_actions`
+- API: `GET/PATCH /api/memory/threads`, `GET /api/memory/meetings`, `POST /api/memory/ingest`
+- Import meeting (Phase 5) auto-ingests a memory meeting
+- Unit tests: `src/lib/memoryGraph.test.ts`, `server/src/lib/memoryGraph.test.ts`, `src/theme/theme.test.ts` (`npm test`)
 
 ### Phase 8 — Document Atelier (planned)
 Turn exports into brand-faithful artifacts (not generic PDF dumps):

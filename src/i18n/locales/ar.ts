@@ -20,6 +20,7 @@ export const ar: MessageTree = {
     upload: 'رفع',
     templates: 'القوالب',
     integrations: 'التكاملات',
+    memory: 'الذاكرة',
     billing: 'الفوترة',
     settings: 'الإعدادات',
     features: 'الميزات',
