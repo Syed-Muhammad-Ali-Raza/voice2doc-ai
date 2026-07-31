@@ -2,12 +2,14 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { BrandWordmark } from '../components/Brand'
 import { GlassCard } from '../components/GlassCard'
+import { useT } from '../i18n/useT'
 import type { PlanId } from '../lib/types'
 import { authService } from '../services/authService'
 import { useAuthStore, useSettingsStore } from '../store/auth'
 import { useDocsStore } from '../store/docs'
 
 export function RegisterPage() {
+  const t = useT()
   const setSession = useAuthStore((s) => s.setSession)
   const setPlan = useSettingsStore((s) => s.setPlan)
   const setTrials = useDocsStore((s) => s.setTrials)
@@ -22,8 +24,10 @@ export function RegisterPage() {
     <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-12">
       <GlassCard strong className="page-enter w-full max-w-md p-8">
         <BrandWordmark size="sm" />
-        <h1 className="mt-6 font-display text-3xl font-semibold text-ink dark:text-dark-ink">Create account</h1>
-        <p className="mt-2 text-sm text-muted">Password must be at least 6 characters.</p>
+        <h1 className="mt-6 font-display text-3xl font-semibold text-ink dark:text-dark-ink">
+          {t('auth.registerTitle')}
+        </h1>
+        <p className="mt-2 text-sm text-muted">{t('auth.registerCopy')}</p>
         <form
           className="mt-6 space-y-3"
           onSubmit={async (e) => {
@@ -46,11 +50,32 @@ export function RegisterPage() {
             }
           }}
         >
-          <input className="input-field" value={name} onChange={(e) => setName(e.target.value)} placeholder="Full name" required />
-          <input className="input-field" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" required />
-          <input className="input-field" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password (min 6)" required minLength={6} />
+          <input
+            className="input-field"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder={t('auth.name')}
+            required
+          />
+          <input
+            className="input-field"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder={t('auth.email')}
+            required
+          />
+          <input
+            className="input-field"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={t('auth.password')}
+            required
+            minLength={6}
+          />
           <button type="submit" className="btn-primary w-full" disabled={busy}>
-            {busy ? 'Creating…' : 'Sign up'}
+            {busy ? t('auth.creating') : t('auth.createAccount')}
           </button>
         </form>
         <button
@@ -73,9 +98,9 @@ export function RegisterPage() {
           Continue with Google
         </button>
         <p className="mt-6 text-center text-sm text-muted">
-          Already have an account?{' '}
+          {t('auth.haveAccount')}{' '}
           <Link to="/login" className="text-accent hover:underline">
-            Log in
+            {t('auth.logIn')}
           </Link>
         </p>
       </GlassCard>

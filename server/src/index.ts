@@ -17,11 +17,13 @@ import { requireAuth } from './middleware/auth.js'
 import { isStripeConfigured, migrateBillingColumns } from './lib/stripe.js'
 import { migrateTeamsColumns } from './lib/teams.js'
 import { migrateIntegrationsColumns } from './lib/integrations.js'
+import { migratePreferencesColumn, preferencesRouter } from './routes/preferences.js'
 import { workspacesRouter } from './routes/workspaces.js'
 
 migrateBillingColumns()
 migrateTeamsColumns()
 migrateIntegrationsColumns()
+migratePreferencesColumn()
 
 const PORT = Number(process.env.PORT || 3001)
 const app = express()
@@ -56,11 +58,12 @@ app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     service: 'voice2doc-api',
-    phase: 5,
+    phase: 6,
     openai: Boolean(process.env.OPENAI_API_KEY),
     stripe: isStripeConfigured(),
     teams: true,
     integrations: true,
+    preferences: true,
   })
 })
 
@@ -80,6 +83,7 @@ app.use('/api/workspaces', requireAuth, workspacesRouter)
 app.use('/api/documents', requireAuth, documentsRouter)
 app.use('/api/ai', requireAuth, aiRouter)
 app.use('/api/integrations', requireAuth, integrationsRouter)
+app.use('/api/preferences', preferencesRouter)
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err)
@@ -88,5 +92,5 @@ app.use((err: unknown, _req: express.Request, res: express.Response, _next: expr
 })
 
 app.listen(PORT, () => {
-  console.log(`Voice2Doc API listening on http://localhost:${PORT} (phase 5, stripe=${isStripeConfigured()})`)
+  console.log(`Voice2Doc API listening on http://localhost:${PORT} (phase 6, stripe=${isStripeConfigured()})`)
 })

@@ -23,6 +23,8 @@ import { UploadPage } from './pages/UploadPage'
 import { WorkspacesPage } from './pages/WorkspacesPage'
 import { WorkspaceDetailPage } from './pages/WorkspaceDetailPage'
 import { IntegrationsPage } from './pages/IntegrationsPage'
+import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
+import { HelpCenterPage } from './pages/HelpCenterPage'
 
 export default function App() {
   return (
@@ -34,6 +36,8 @@ export default function App() {
           <Route path="pricing" element={<PricingPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
+          <Route path="privacy" element={<PrivacyPolicyPage />} />
+          <Route path="help" element={<HelpCenterPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="forgot-password" element={<ForgotPasswordPage />} />

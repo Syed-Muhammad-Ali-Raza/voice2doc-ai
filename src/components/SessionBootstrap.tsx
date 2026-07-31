@@ -12,6 +12,7 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
   const logout = useAuthStore((s) => s.logout)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const setPlan = useSettingsStore((s) => s.setPlan)
+  const syncFromServer = useSettingsStore((s) => s.syncFromServer)
   const setDocuments = useDocsStore((s) => s.setDocuments)
   const setTrials = useDocsStore((s) => s.setTrials)
   const [ready, setReady] = useState(env.useMockApi)
@@ -45,6 +46,7 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
         setDocuments(docs)
         setPlan(entitlements.plan)
         setTrials(entitlements.trialsUsed, entitlements.trialsLimit)
+        await syncFromServer()
       } catch {
         if (!cancelled) logout()
       } finally {
@@ -55,7 +57,7 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [logout, setDocuments, setPlan, setSession, setTrials])
+  }, [logout, setDocuments, setPlan, setSession, setTrials, syncFromServer])
 
   // When user logs in during session, refresh server data
   useEffect(() => {
@@ -71,6 +73,7 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
         setDocuments(docs)
         setPlan(entitlements.plan as PlanId)
         setTrials(entitlements.trialsUsed, entitlements.trialsLimit)
+        await syncFromServer()
       } catch {
         /* ignore refresh errors */
       }
@@ -78,7 +81,7 @@ export function SessionBootstrap({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [isAuthenticated, ready, setDocuments, setPlan, setTrials])
+  }, [isAuthenticated, ready, setDocuments, setPlan, setTrials, syncFromServer])
 
   if (!ready) {
     return (

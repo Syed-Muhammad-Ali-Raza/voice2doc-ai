@@ -33,8 +33,8 @@
   body {
     @apply m-0 min-h-screen font-sans text-ink bg-canvas;
     background-image:
-      radial-gradient(ellipse 80% 50% at 10% -10%, rgba(196, 123, 45, 0.12), transparent),
-      radial-gradient(ellipse 60% 40% at 90% 10%, rgba(42, 111, 106, 0.1), transparent),
+      radial-gradient(ellipse 80% 50% at 10% -10%, rgba(var(--studio-accent-rgb, 196, 123, 45), 0.12), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 10%, rgba(var(--studio-signal-rgb, 42, 111, 106), 0.1), transparent),
       linear-gradient(165deg, var(--color-canvas) 0%, var(--color-canvas-deep) 100%);
     background-attachment: fixed;
   }
@@ -42,13 +42,13 @@
   html.dark body {
     @apply text-dark-ink bg-dark-canvas;
     background-image:
-      radial-gradient(ellipse 70% 45% at 15% -5%, rgba(196, 123, 45, 0.18), transparent),
-      radial-gradient(ellipse 50% 35% at 85% 5%, rgba(42, 111, 106, 0.14), transparent),
+      radial-gradient(ellipse 70% 45% at 15% -5%, rgba(var(--studio-accent-rgb, 196, 123, 45), 0.18), transparent),
+      radial-gradient(ellipse 50% 35% at 85% 5%, rgba(var(--studio-signal-rgb, 42, 111, 106), 0.14), transparent),
       linear-gradient(165deg, var(--color-dark-canvas) 0%, var(--color-dark-canvas-deep) 100%);
   }
 
   ::selection {
-    background: rgba(196, 123, 45, 0.25);
+    background: rgba(var(--studio-accent-rgb, 196, 123, 45), 0.25);
   }
 }
 
@@ -152,10 +152,10 @@
 @keyframes recordPulse {
   0%,
   100% {
-    box-shadow: 0 0 0 0 rgba(196, 123, 45, 0.45);
+    box-shadow: 0 0 0 0 rgba(var(--studio-accent-rgb, 196, 123, 45), 0.45);
   }
   70% {
-    box-shadow: 0 0 0 18px rgba(196, 123, 45, 0);
+    box-shadow: 0 0 0 18px rgba(var(--studio-accent-rgb, 196, 123, 45), 0);
   }
 }
 
