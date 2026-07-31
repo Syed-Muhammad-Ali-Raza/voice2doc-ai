@@ -20,6 +20,7 @@ export const es: MessageTree = {
     upload: 'Subir',
     templates: 'Plantillas',
     integrations: 'Integraciones',
+    memory: 'Memoria',
     billing: 'Facturación',
     settings: 'Ajustes',
     features: 'Funciones',
