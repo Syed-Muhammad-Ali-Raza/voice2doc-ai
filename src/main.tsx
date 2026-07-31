@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import App from './App'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { SessionBootstrap } from './components/SessionBootstrap'
+import './i18n'
 import './index.css'
 import { useSettingsStore } from './store/auth'
 

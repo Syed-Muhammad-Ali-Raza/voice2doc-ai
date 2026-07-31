@@ -19,27 +19,29 @@ import {
 } from 'lucide-react'
 import { BrandWordmark } from './Brand'
 import { Toast } from './Toast'
+import { useT } from '../i18n/useT'
 import { authService } from '../services/authService'
 import { useAuthStore } from '../store/auth'
 
-const nav = [
-  { to: '/app', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/app/documents', label: 'Documents', icon: FileText },
-  { to: '/app/workspaces', label: 'Workspaces', icon: Users },
-  { to: '/app/record', label: 'Record', icon: Mic },
-  { to: '/app/upload', label: 'Upload', icon: Upload },
-  { to: '/app/templates', label: 'Templates', icon: LayoutTemplate },
-  { to: '/app/integrations', label: 'Integrations', icon: Plug },
-  { to: '/app/billing', label: 'Billing', icon: CreditCard },
-  { to: '/app/settings', label: 'Settings', icon: Settings },
-]
-
 export function AppShell() {
+  const t = useT()
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
+
+  const nav = [
+    { to: '/app', label: t('nav.dashboard'), icon: LayoutDashboard, end: true },
+    { to: '/app/documents', label: t('nav.documents'), icon: FileText },
+    { to: '/app/workspaces', label: t('nav.workspaces'), icon: Users },
+    { to: '/app/record', label: t('nav.record'), icon: Mic },
+    { to: '/app/upload', label: t('nav.upload'), icon: Upload },
+    { to: '/app/templates', label: t('nav.templates'), icon: LayoutTemplate },
+    { to: '/app/integrations', label: t('nav.integrations'), icon: Plug },
+    { to: '/app/billing', label: t('nav.billing'), icon: CreditCard },
+    { to: '/app/settings', label: t('nav.settings'), icon: Settings },
+  ]
 
   const onSearch = (e: FormEvent) => {
     e.preventDefault()
@@ -81,7 +83,7 @@ export function AppShell() {
         }}
       >
         <LogOut size={16} />
-        Sign out
+        {t('common.signOut')}
       </button>
     </aside>
   )
@@ -91,13 +93,23 @@ export function AppShell() {
       <div className="hidden lg:block">{side}</div>
       {open && (
         <div className="fixed inset-0 z-50 flex lg:hidden">
-          <button type="button" className="absolute inset-0 bg-ink/40" aria-label="Close menu" onClick={() => setOpen(false)} />
+          <button
+            type="button"
+            className="absolute inset-0 bg-ink/40"
+            aria-label={t('common.closeMenu')}
+            onClick={() => setOpen(false)}
+          />
           <div className="relative z-10 h-full">{side}</div>
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-border/70 bg-canvas/75 px-4 py-3 backdrop-blur-xl dark:border-dark-border dark:bg-dark-canvas/75 md:px-6">
-          <button type="button" className="btn-ghost lg:hidden" onClick={() => setOpen(true)} aria-label="Open menu">
+          <button
+            type="button"
+            className="btn-ghost lg:hidden"
+            onClick={() => setOpen(true)}
+            aria-label={t('common.openMenu')}
+          >
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
           <form onSubmit={onSearch} className="relative max-w-md flex-1">
@@ -105,11 +117,11 @@ export function AppShell() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search documents…"
+              placeholder={t('common.search')}
               className="input-field pl-9"
             />
           </form>
-          <button type="button" className="btn-ghost relative" aria-label="Notifications">
+          <button type="button" className="btn-ghost relative" aria-label={t('settings.notifications')}>
             <Bell size={18} />
             <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-accent" />
           </button>

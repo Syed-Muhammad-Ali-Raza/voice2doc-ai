@@ -201,13 +201,75 @@ Toggle via `VITE_USE_MOCK_API` in `.env`. When `false`, adapters should call `VI
 - Admin snapshot (member/doc counts) for owners & admins
 - Create workspace requires Pro or Business plan
 
-### Phase 5 — Integrations (current)
+### Phase 5 — Integrations (complete)
 - Providers: Zoom, Google Meet, Microsoft Teams, Notion, Google Docs
 - Connect/disconnect (demo mode without vendor OAuth keys)
 - OAuth redirect flow when client IDs/secrets are configured
 - Import meeting → creates Meeting Notes draft
 - Export document → Notion / Google Docs (demo URL or live Notion with `NOTION_INTERNAL_TOKEN`)
 - UI: `/app/integrations` + editor Export menu
+
+### Phase 6 — Localization & Studio Personalization (current)
+**Unique product angle:** a “Studio Atelier” — users do not merely toggle dark mode; they compose a personal glass studio (accent + type + language) that re-skins the entire product, including marketing pages.
+
+| Capability | Detail |
+|------------|--------|
+| Locales | `i18next` + `react-i18next`; catalogs `en`/`es`/`fr`/`de`/`ur`/`ar` under `src/i18n/locales/` |
+| RTL | Urdu & Arabic set `html[dir=rtl]` + `lang` via `applyStudioTheme` (synced with `i18n.changeLanguage`) |
+| Accent atelier | 6 curated palettes → CSS `--color-accent`, `--color-signal`, `--studio-*-rgb` |
+| Typography | 6 display/body pairs → `--font-display`, `--font-sans` |
+| Persistence | Zustand `v2d-settings` + `users.preferences_json` via `GET/PUT /api/preferences` |
+| Surfaces wired | Public header/footer, landing hero, auth, app shell nav, Settings atelier |
+
+### Phase 7 — Meeting Memory Graph (planned)
+Build a cross-meeting knowledge graph unique to Voice2Doc:
+
+- Speaker diarization labels attached to transcript segments
+- Action-item extraction with owner + due-date candidates
+- “Memory” view: open threads that span imported Zoom/Meet/Teams sessions
+- Deduplicate recurring decisions (“same decision, new meeting”)
+- API sketch: `GET /api/memory/threads`, `POST /api/memory/link`
+
+### Phase 8 — Document Atelier (planned)
+Turn exports into brand-faithful artifacts (not generic PDF dumps):
+
+- Per-workspace **brand kit** (logo, accent inherited from Phase 6, letterhead)
+- **Tone DNA** — reusable voice profiles (“Board brief”, “Customer email”) applied at job config time
+- Template studio with live preview using selected typography pair
+- Honest PDF/DOCX exporters replacing stub toasts
+- API sketch: `CRUD /api/brand-kits`, `CRUD /api/tone-profiles`
+
+### Phase 9 — Live Studio Collab (planned)
+Collaboration anchored to *voice time*, not just document paragraphs:
+
+- Presence avatars in the editor
+- Comments pinned to transcript timestamps (and mirrored into the formatted doc)
+- Shared workspace editing with conflict-safe saves
+- Optional live listen-along while a teammate records
+- API sketch: WebSocket `/ws/collab/:documentId`, `CRUD /api/comments`
+
+### Phase 10 — Trust & Compliance Vault (planned)
+Enterprise trust without losing Studio Glass clarity:
+
+- Retention policies (auto-delete audio after N days; keep docs)
+- Immutable audit log for exports, imports, and preference changes
+- Region / residency hint for future multi-region storage
+- Data export & account wipe endpoints
+- API sketch: `GET /api/audit`, `PUT /api/compliance/policy`
+
+### Phase 11 — Studio AI Chatbot (planned)
+An in-product assistant that lives in the Studio Glass shell — not a generic widget:
+
+- Floating studio chat with accent/typography inherited from Phase 6 preferences
+- Context modes: **Help** (product FAQs), **Document** (ask about the open draft/transcript), **Meeting** (summarize action items from Memory Graph)
+- Streaming replies via existing AI job worker patterns; cite transcript timestamps when answering from audio
+- Optional tools: “insert reply into editor”, “create Meeting Notes draft”, “open Help Center article”
+- Respect privacy analytics toggle + future compliance retention (no chat logs when opted out)
+- API sketch: `POST /api/chat/sessions`, `POST /api/chat/sessions/:id/messages` (SSE), `GET /api/chat/sessions`
+
+### Public legal & support surfaces
+- `/privacy` — Privacy Policy (collection, audio, integrations, rights)
+- `/help` — Help Center (topics + FAQ, including Phase 11 chatbot preview note)
 
 ---
 
@@ -228,3 +290,4 @@ Toggle via `VITE_USE_MOCK_API` in `.env`. When `false`, adapters should call `VI
 - Studio Glass identity (not generic purple SaaS)
 - One primary action per screen
 - Honest stubs (e.g. PDF export toast) until real exporters ship
+- Phase 6 accents stay warm/neutral (amber, teal, clay, brass, sage, copper) — never default purple glow
