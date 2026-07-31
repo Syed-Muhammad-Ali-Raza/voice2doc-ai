@@ -1,6 +1,7 @@
 import { Link, NavLink, Outlet } from 'react-router-dom'
 import { BrandWordmark } from './Brand'
 import { Toast } from './Toast'
+import { VoiceGuideButton } from './VoiceGuideButton'
 import { LOCALES, type LocaleCode } from '../i18n'
 import { useT } from '../i18n/useT'
 import { useSettingsStore } from '../store/auth'
@@ -92,6 +93,7 @@ export function PublicLayout() {
         </div>
       </footer>
       <Toast />
+      <VoiceGuideButton />
     </div>
   )
 }

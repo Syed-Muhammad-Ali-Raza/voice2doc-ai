@@ -21,6 +21,7 @@ export const es: MessageTree = {
     templates: 'Plantillas',
     integrations: 'Integraciones',
     memory: 'Memoria',
+    atelier: 'Atelier',
     billing: 'Facturación',
     settings: 'Ajustes',
     features: 'Funciones',

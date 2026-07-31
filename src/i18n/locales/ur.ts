@@ -21,6 +21,7 @@ export const ur: MessageTree = {
     templates: 'ٹیمپلیٹس',
     integrations: 'انٹیگریشنز',
     memory: 'میموری',
+    atelier: 'ایٹلیئر',
     billing: 'بلنگ',
     settings: 'ترتیبات',
     features: 'خصوصیات',
