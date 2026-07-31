@@ -2,7 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-**Phase 7 (current):** Meeting Memory Graph — speakers, action items, recurring decisions across meeting imports.
+**Phase 8 (current):** Document Atelier — brand kits, Tone DNA, letterhead preview — plus a floating **Voice guide** for spoken demos.
 
 ---
 
@@ -33,11 +33,39 @@ npm run test:watch
 | 0–4 | Done | UI, auth, jobs, Stripe, teams |
 | 5 Integrations | Done | Zoom / Meet / Teams / Notion / Docs |
 | 6 Localization & Studio Personalization | Done | i18n, RTL, color + typography atelier |
-| **7 Meeting Memory Graph** | **Current** | Speakers, actions, recurring decisions |
-| 8 Document Atelier | Planned | Brand kits, tone DNA, export polish |
+| 7 Meeting Memory Graph | Done | Speakers, actions, recurring decisions |
+| **8 Document Atelier** | **Current** | Brand kits, Tone DNA, voice guide |
 | 9 Live Studio Collab | Planned | Presence, timestamp comments |
 | 10 Trust & Compliance Vault | Planned | Retention, audit, residency |
 | 11 Studio AI Chatbot | Planned | In-app assistant for docs & help |
+
+---
+
+## Voice guide (demo / how-to)
+
+Floating **headphones** button (bottom-right) on marketing pages and inside the app:
+
+1. Open the panel and pick a tour (Welcome, Record, Memory, Settings, Atelier, Help).
+2. Your browser speaks the steps (Web Speech API) — no API key required.
+3. Stop anytime. Uses your current UI language when the browser has a matching voice.
+
+---
+
+## Phase 8 — Document Atelier
+
+Open **Atelier** in the sidebar:
+
+1. Choose or create a **brand kit** (logo text, accent, letterhead title, footer).
+2. Choose or create a **Tone DNA** profile (do / don’t / sample opening).
+3. Live **letterhead preview** + **tone fit score** for a sample draft.
+
+### API
+
+| Method | Path |
+|--------|------|
+| GET/POST | `/api/atelier/brand-kits` |
+| GET/POST | `/api/atelier/tone-profiles` |
+| POST | `/api/atelier/preview` |
 
 ---
 

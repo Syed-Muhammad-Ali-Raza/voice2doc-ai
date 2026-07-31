@@ -221,7 +221,7 @@ Toggle via `VITE_USE_MOCK_API` in `.env`. When `false`, adapters should call `VI
 | Persistence | Zustand `v2d-settings` + `users.preferences_json` via `GET/PUT /api/preferences` |
 | Surfaces wired | Public header/footer, landing hero, auth, app shell nav, Settings atelier |
 
-### Phase 7 — Meeting Memory Graph (current)
+### Phase 7 — Meeting Memory Graph (complete)
 Cross-meeting knowledge graph unique to Voice2Doc:
 
 - Speaker diarization labels on transcript segments (`Speaker: …` parsing)
@@ -233,14 +233,20 @@ Cross-meeting knowledge graph unique to Voice2Doc:
 - Import meeting (Phase 5) auto-ingests a memory meeting
 - Unit tests: `src/lib/memoryGraph.test.ts`, `server/src/lib/memoryGraph.test.ts`, `src/theme/theme.test.ts` (`npm test`)
 
-### Phase 8 — Document Atelier (planned)
-Turn exports into brand-faithful artifacts (not generic PDF dumps):
+### Phase 8 — Document Atelier (current)
+Turn exports into brand-faithful artifacts:
 
-- Per-workspace **brand kit** (logo, accent inherited from Phase 6, letterhead)
-- **Tone DNA** — reusable voice profiles (“Board brief”, “Customer email”) applied at job config time
-- Template studio with live preview using selected typography pair
-- Honest PDF/DOCX exporters replacing stub toasts
-- API sketch: `CRUD /api/brand-kits`, `CRUD /api/tone-profiles`
+- Per-user **brand kits** (logo text, accent, letterhead title, footer)
+- **Tone DNA** profiles with do/don’t lists + sample openings → prompt fragments
+- Live preview via `POST /api/atelier/preview` (letterhead wrap + tone fit score)
+- UI: `/app/atelier`
+- Tables: `brand_kits`, `tone_profiles`
+- Unit tests: `src/lib/atelier.test.ts`
+
+### Voice Guide (cross-cutting demo UX)
+- Floating headphones control on public + app shells
+- Browser Speech Synthesis narrates guided tours (welcome, record, memory, settings, atelier, help)
+- No vendor TTS keys required; language hint follows Phase 6 locale
 
 ### Phase 9 — Live Studio Collab (planned)
 Collaboration anchored to *voice time*, not just document paragraphs:

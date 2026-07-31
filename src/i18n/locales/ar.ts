@@ -21,6 +21,7 @@ export const ar: MessageTree = {
     templates: 'القوالب',
     integrations: 'التكاملات',
     memory: 'الذاكرة',
+    atelier: 'المرسم',
     billing: 'الفوترة',
     settings: 'الإعدادات',
     features: 'الميزات',

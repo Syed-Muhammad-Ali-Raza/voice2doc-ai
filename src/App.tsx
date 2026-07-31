@@ -26,6 +26,7 @@ import { IntegrationsPage } from './pages/IntegrationsPage'
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage'
 import { HelpCenterPage } from './pages/HelpCenterPage'
 import { MemoryPage } from './pages/MemoryPage'
+import { AtelierPage } from './pages/AtelierPage'
 
 export default function App() {
   return (
@@ -57,6 +58,7 @@ export default function App() {
             <Route path="templates" element={<TemplatesPage />} />
             <Route path="integrations" element={<IntegrationsPage />} />
             <Route path="memory" element={<MemoryPage />} />
+            <Route path="atelier" element={<AtelierPage />} />
             <Route path="billing" element={<BillingPage />} />
             <Route path="settings" element={<SettingsPage />} />
             <Route path="profile" element={<ProfilePage />} />
