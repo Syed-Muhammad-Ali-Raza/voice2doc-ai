@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import http from 'node:http'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.join(__dirname, '..', '.env') })
@@ -22,6 +23,8 @@ import { migrateMemoryTables } from './lib/memory.js'
 import { memoryRouter } from './routes/memory.js'
 import { migrateAtelierTables } from './lib/atelier.js'
 import { atelierRouter } from './routes/atelier.js'
+import { migrateCollabTables } from './lib/collab.js'
+import { attachCollabWebSocket } from './ws/collabHub.js'
 import { workspacesRouter } from './routes/workspaces.js'
 
 migrateBillingColumns()
@@ -30,6 +33,7 @@ migrateIntegrationsColumns()
 migratePreferencesColumn()
 migrateMemoryTables()
 migrateAtelierTables()
+migrateCollabTables()
 
 const PORT = Number(process.env.PORT || 3001)
 const app = express()
@@ -64,7 +68,7 @@ app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     service: 'voice2doc-api',
-    phase: 8,
+    phase: 9,
     openai: Boolean(process.env.OPENAI_API_KEY),
     stripe: isStripeConfigured(),
     teams: true,
@@ -72,6 +76,7 @@ app.get('/api/health', (_req, res) => {
     preferences: true,
     memory: true,
     atelier: true,
+    collab: true,
   })
 })
 
@@ -101,6 +106,11 @@ app.use((err: unknown, _req: express.Request, res: express.Response, _next: expr
   res.status(500).json({ error: message })
 })
 
-app.listen(PORT, () => {
-  console.log(`Voice2Doc API listening on http://localhost:${PORT} (phase 8, stripe=${isStripeConfigured()})`)
+const server = http.createServer(app)
+attachCollabWebSocket(server)
+
+server.listen(PORT, () => {
+  console.log(
+    `Voice2Doc API listening on http://localhost:${PORT} (phase 9, collab ws=/ws/collab, stripe=${isStripeConfigured()})`,
+  )
 })

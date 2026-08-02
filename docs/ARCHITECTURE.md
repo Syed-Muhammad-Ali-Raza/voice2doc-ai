@@ -233,7 +233,7 @@ Cross-meeting knowledge graph unique to Voice2Doc:
 - Import meeting (Phase 5) auto-ingests a memory meeting
 - Unit tests: `src/lib/memoryGraph.test.ts`, `server/src/lib/memoryGraph.test.ts`, `src/theme/theme.test.ts` (`npm test`)
 
-### Phase 8 — Document Atelier (current)
+### Phase 8 — Document Atelier (complete)
 Turn exports into brand-faithful artifacts:
 
 - Per-user **brand kits** (logo text, accent, letterhead title, footer)
@@ -248,14 +248,17 @@ Turn exports into brand-faithful artifacts:
 - Browser Speech Synthesis narrates guided tours (welcome, record, memory, settings, atelier, help)
 - No vendor TTS keys required; language hint follows Phase 6 locale
 
-### Phase 9 — Live Studio Collab (planned)
+### Phase 9 — Live Studio Collab (current)
 Collaboration anchored to *voice time*, not just document paragraphs:
 
-- Presence avatars in the editor
-- Comments pinned to transcript timestamps (and mirrored into the formatted doc)
-- Shared workspace editing with conflict-safe saves
-- Optional live listen-along while a teammate records
-- API sketch: WebSocket `/ws/collab/:documentId`, `CRUD /api/comments`
+- Presence avatars in the editor (WebSocket `/ws/collab` + REST heartbeat)
+- Modes: editing / listening (listen-along) / recording
+- Comments pinned to transcript timestamps (`m:ss`) and mirrored into doc HTML
+- Conflict-safe saves via `baseUpdatedAt` / `revision` → HTTP 409 on stale write
+- Table: `doc_comments`; documents gain `revision` column
+- API: `CRUD /api/documents/:id/comments`, `POST .../presence`
+- UI: `CollabPanel` on editor page
+- Unit tests: `src/lib/collab.test.ts`
 
 ### Phase 10 — Trust & Compliance Vault (planned)
 Enterprise trust without losing Studio Glass clarity:

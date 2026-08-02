@@ -7,7 +7,10 @@ export interface DocumentService {
   list: () => Promise<DocItem[]>
   get: (id: string) => Promise<DocItem | null>
   create: (doc: Omit<DocItem, 'id' | 'createdAt' | 'updatedAt'>) => Promise<DocItem>
-  update: (id: string, patch: Partial<DocItem>) => Promise<DocItem>
+  update: (
+    id: string,
+    patch: Partial<DocItem> & { baseUpdatedAt?: string; baseRevision?: number },
+  ) => Promise<DocItem>
   remove: (id: string) => Promise<void>
 }
 

@@ -2,7 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-**Phase 8 (current):** Document Atelier — brand kits, Tone DNA, letterhead preview — plus a floating **Voice guide** for spoken demos.
+**Phase 9 (current):** Live Studio Collab — presence avatars, timestamp comments, conflict-safe saves, listen-along mode.
 
 ---
 
@@ -18,10 +18,10 @@ npm run dev
 |---------|-----|
 | Web | `http://localhost:5173` |
 | API | `http://localhost:3001` |
+| Collab WS | `ws://localhost:3001/ws/collab` |
 
 ```bash
-npm test          # unit tests (Vitest)
-npm run test:watch
+npm test
 ```
 
 ---
@@ -34,10 +34,31 @@ npm run test:watch
 | 5 Integrations | Done | Zoom / Meet / Teams / Notion / Docs |
 | 6 Localization & Studio Personalization | Done | i18n, RTL, color + typography atelier |
 | 7 Meeting Memory Graph | Done | Speakers, actions, recurring decisions |
-| **8 Document Atelier** | **Current** | Brand kits, Tone DNA, voice guide |
-| 9 Live Studio Collab | Planned | Presence, timestamp comments |
+| 8 Document Atelier | Done | Brand kits, Tone DNA, voice guide |
+| **9 Live Studio Collab** | **Current** | Presence, timestamp comments, conflict saves |
 | 10 Trust & Compliance Vault | Planned | Retention, audit, residency |
 | 11 Studio AI Chatbot | Planned | In-app assistant for docs & help |
+
+---
+
+## Phase 9 — Live Studio Collab
+
+Open any document in the **editor**:
+
+1. **Presence** avatars show who is in the room (WebSocket + heartbeat).
+2. Set mode to **Editing**, **Listen along**, or **Recording**.
+3. Add a **timestamp comment** (`m:ss`) — it mirrors into the document HTML.
+4. Saves send `baseUpdatedAt`; a **409 conflict** reloads the newer version.
+
+### API
+
+| Method | Path |
+|--------|------|
+| GET | `/api/documents/:id/comments` |
+| POST | `/api/documents/:id/comments` |
+| DELETE | `/api/documents/:id/comments/:commentId` |
+| POST | `/api/documents/:id/comments/presence` |
+| WS | `/ws/collab?documentId=&token=` |
 
 ---
 
