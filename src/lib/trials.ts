@@ -4,7 +4,7 @@ import type { PlanId } from './types'
 export { FREE_DOCUMENT_LIMIT }
 
 export function isPaidPlan(plan: PlanId): boolean {
-  return plan === 'pro' || plan === 'business'
+  return plan === 'pro' || plan === 'business' || plan === 'enterprise'
 }
 
 export function canUseAiDocument(plan: PlanId, trialsUsed: number): boolean {

@@ -18,6 +18,7 @@ import {
   Plug,
   Brain,
   Wand2,
+  Shield,
 } from 'lucide-react'
 import { BrandWordmark } from './Brand'
 import { Toast } from './Toast'
@@ -44,6 +45,7 @@ export function AppShell() {
     { to: '/app/integrations', label: t('nav.integrations'), icon: Plug },
     { to: '/app/memory', label: t('nav.memory'), icon: Brain },
     { to: '/app/atelier', label: t('nav.atelier'), icon: Wand2 },
+    { to: '/app/compliance', label: t('nav.compliance'), icon: Shield },
     { to: '/app/billing', label: t('nav.billing'), icon: CreditCard },
     { to: '/app/settings', label: t('nav.settings'), icon: Settings },
   ]

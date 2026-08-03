@@ -40,7 +40,7 @@ export function getUserPlan(userId: string): string | null {
 
 /** Creating workspaces requires Pro or Business. */
 export function canCreateWorkspace(plan: string): boolean {
-  return plan === 'pro' || plan === 'business'
+  return plan === 'pro' || plan === 'business' || plan === 'enterprise'
 }
 
 export function getMembership(

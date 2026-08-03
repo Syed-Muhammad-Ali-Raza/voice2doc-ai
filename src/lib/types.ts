@@ -1,4 +1,4 @@
-export type PlanId = 'free' | 'pro' | 'business'
+export type PlanId = 'free' | 'pro' | 'business' | 'enterprise'
 
 export type DocumentType =
   | 'Meeting Notes'

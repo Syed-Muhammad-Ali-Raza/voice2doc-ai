@@ -106,7 +106,7 @@ export function LandingPage() {
             {t('nav.pricing')} <ArrowRight size={16} />
           </Link>
         </div>
-        <div className="mt-10 grid gap-4 md:grid-cols-3">
+        <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PLANS.map((p) => (
             <GlassCard key={p.id} strong={p.highlight} className={`p-6 ${p.highlight ? 'ring-1 ring-accent/40' : ''}`}>
               <h3 className="font-display text-2xl font-semibold text-ink dark:text-dark-ink">{p.name}</h3>
