@@ -2,7 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-**Phase 9 (current):** Live Studio Collab — presence avatars, timestamp comments, conflict-safe saves, listen-along mode.
+**Phase 10 (current):** Trust & Compliance Vault — retention, audit log, residency hints, export/wipe — plus an **Enterprise** plan.
 
 ---
 
@@ -35,9 +35,43 @@ npm test
 | 6 Localization & Studio Personalization | Done | i18n, RTL, color + typography atelier |
 | 7 Meeting Memory Graph | Done | Speakers, actions, recurring decisions |
 | 8 Document Atelier | Done | Brand kits, Tone DNA, voice guide |
-| **9 Live Studio Collab** | **Current** | Presence, timestamp comments, conflict saves |
-| 10 Trust & Compliance Vault | Planned | Retention, audit, residency |
+| 9 Live Studio Collab | Done | Presence, timestamp comments, conflict saves |
+| **10 Trust & Compliance Vault** | **Current** | Retention, audit, residency, Enterprise plan |
 | 11 Studio AI Chatbot | Planned | In-app assistant for docs & help |
+| 12 Echo Score | Planned | Spoken-intent vs draft fidelity |
+| 13 Voice Twin | Planned | Personal writing voice from past docs |
+| 14 Speak-the-UI | Planned | Voice-controlled navigation |
+
+---
+
+## Plans
+
+| Plan | Monthly | Highlights |
+|------|---------|------------|
+| Free | $0 | 10 AI docs, templates, voice guide |
+| Pro | $19 | Unlimited AI, Atelier, Memory |
+| Business | $49 | Teams, live collab, audit preview |
+| **Enterprise** | **$149** | Compliance Vault, retention, export/wipe |
+
+---
+
+## Phase 10 — Trust & Compliance
+
+Open **Trust** in the sidebar:
+
+1. Set **audio retention days** (0 = keep forever) and residency hint.
+2. Save policy — changes appear in the **audit log**.
+3. **Purge expired audio**, **Export my data** (JSON), or type `WIPE` to clear studio content.
+
+### API
+
+| Method | Path |
+|--------|------|
+| GET/PUT | `/api/compliance/policy` |
+| GET | `/api/compliance/audit` |
+| POST | `/api/compliance/purge-audio` |
+| POST | `/api/compliance/export` |
+| POST | `/api/compliance/wipe` |
 
 ---
 

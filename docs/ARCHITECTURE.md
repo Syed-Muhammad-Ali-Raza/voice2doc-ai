@@ -248,7 +248,7 @@ Turn exports into brand-faithful artifacts:
 - Browser Speech Synthesis narrates guided tours (welcome, record, memory, settings, atelier, help)
 - No vendor TTS keys required; language hint follows Phase 6 locale
 
-### Phase 9 — Live Studio Collab (current)
+### Phase 9 — Live Studio Collab (complete)
 Collaboration anchored to *voice time*, not just document paragraphs:
 
 - Presence avatars in the editor (WebSocket `/ws/collab` + REST heartbeat)
@@ -260,14 +260,18 @@ Collaboration anchored to *voice time*, not just document paragraphs:
 - UI: `CollabPanel` on editor page
 - Unit tests: `src/lib/collab.test.ts`
 
-### Phase 10 — Trust & Compliance Vault (planned)
+### Phase 10 — Trust & Compliance Vault (current)
 Enterprise trust without losing Studio Glass clarity:
 
-- Retention policies (auto-delete audio after N days; keep docs)
-- Immutable audit log for exports, imports, and preference changes
-- Region / residency hint for future multi-region storage
-- Data export & account wipe endpoints
-- API sketch: `GET /api/audit`, `PUT /api/compliance/policy`
+- Retention policies (purge audio after N days; keep docs toggle)
+- Immutable audit log (exports, imports, preference + policy changes)
+- Region / residency hint (`local` | `us` | `eu` | `apac`)
+- Data export JSON + content wipe (account retained)
+- Tables: `audit_log`, `compliance_policies`
+- API: `GET/PUT /api/compliance/policy`, `GET /api/compliance/audit`, `POST /purge-audio|export|wipe`
+- UI: `/app/compliance`
+- Plans: Free / Pro / Business / **Enterprise** (Trust Vault + residency)
+- Unit tests: `src/lib/compliance.test.ts`
 
 ### Phase 11 — Studio AI Chatbot (planned)
 An in-product assistant that lives in the Studio Glass shell — not a generic widget:
@@ -276,8 +280,29 @@ An in-product assistant that lives in the Studio Glass shell — not a generic w
 - Context modes: **Help** (product FAQs), **Document** (ask about the open draft/transcript), **Meeting** (summarize action items from Memory Graph)
 - Streaming replies via existing AI job worker patterns; cite transcript timestamps when answering from audio
 - Optional tools: “insert reply into editor”, “create Meeting Notes draft”, “open Help Center article”
-- Respect privacy analytics toggle + future compliance retention (no chat logs when opted out)
+- Respect privacy analytics toggle + compliance retention (no chat logs when opted out)
 - API sketch: `POST /api/chat/sessions`, `POST /api/chat/sessions/:id/messages` (SSE), `GET /api/chat/sessions`
+
+### Phase 12 — Echo Score (planned)
+Measure how much spoken intent survived into the finished document:
+
+- Diff spoken transcript vs final draft; surface “lost phrases”
+- Score 0–100 with tips to restore missing commitments/action items
+- Hook into job finalization + editor sidebar
+
+### Phase 13 — Voice Twin (planned)
+Learn a personal writing voice from past documents and apply as living Tone DNA:
+
+- Train from selected docs / Memory decisions
+- One-click “sound like me” on AI assist
+- Versioned twins per workspace
+
+### Phase 14 — Speak-the-UI (planned)
+Expand Voice Guide into voice-controlled navigation:
+
+- “Open Memory”, “Start recording”, “Export to Notion”
+- Locale-aware speech recognition + confirmation toasts
+- Respect compliance audit for voice commands
 
 ### Public legal & support surfaces
 - `/privacy` — Privacy Policy (collection, audio, integrations, rights)

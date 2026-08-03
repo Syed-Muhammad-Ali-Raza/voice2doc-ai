@@ -11,6 +11,7 @@ import {
   type IntegrationProvider,
 } from '../lib/integrations.js'
 import { canAccessDocument } from '../lib/teams.js'
+import { writeAudit } from '../lib/compliance.js'
 import { ingestMeetingMemory } from '../lib/memory.js'
 
 export const integrationsRouter = Router()
@@ -248,6 +249,11 @@ integrationsRouter.post('/:provider/export', async (req: AuthedRequest, res) => 
           externalUrl: body.url ?? `https://notion.so/${body.id?.replace(/-/g, '')}`,
           title: doc.title,
         })
+        writeAudit(req.user!.sub, 'integrations.export', {
+          resourceType: 'document',
+          resourceId: doc.id,
+          meta: { provider, mode: 'live' },
+        })
         return
       }
     } catch (err) {
@@ -270,6 +276,11 @@ integrationsRouter.post('/:provider/export', async (req: AuthedRequest, res) => 
       provider === 'notion'
         ? 'Document queued to Notion (demo link until OAuth + parent page are configured).'
         : 'Document queued to Google Docs (demo link until Google OAuth is configured).',
+  })
+  writeAudit(req.user!.sub, 'integrations.export', {
+    resourceType: 'document',
+    resourceId: doc.id,
+    meta: { provider, mode: 'demo_or_simulated' },
   })
 })
 
@@ -337,5 +348,10 @@ integrationsRouter.post('/:provider/import-meeting', (req: AuthedRequest, res) =
     title,
     memory,
     message: 'Meeting notes draft created. Run AI polish from the editor if needed.',
+  })
+  writeAudit(req.user!.sub, 'integrations.import_meeting', {
+    resourceType: 'document',
+    resourceId: id,
+    meta: { provider },
   })
 })

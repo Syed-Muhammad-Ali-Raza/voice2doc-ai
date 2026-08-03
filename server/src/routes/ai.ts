@@ -42,7 +42,7 @@ function assertCanProcess(userId: string) {
     .prepare('SELECT plan, trials_used, trials_limit FROM users WHERE id = ?')
     .get(userId) as { plan: string; trials_used: number; trials_limit: number } | undefined
   if (!user) return { ok: false as const, status: 404, error: 'User not found' }
-  const unlimited = user.plan === 'pro' || user.plan === 'business'
+  const unlimited = user.plan === 'pro' || user.plan === 'business' || user.plan === 'enterprise'
   if (!unlimited && user.trials_used >= user.trials_limit) {
     return { ok: false as const, status: 402, error: 'Free limit reached. Upgrade to continue.' }
   }
@@ -183,7 +183,7 @@ aiRouter.get('/jobs/:id', (req: AuthedRequest, res) => {
       plan: trials.plan,
       trialsUsed: trials.trials_used,
       trialsLimit: trials.trials_limit,
-      unlimitedAi: trials.plan === 'pro' || trials.plan === 'business',
+      unlimitedAi: trials.plan === 'pro' || trials.plan === 'business' || trials.plan === 'enterprise',
     }
   }
 

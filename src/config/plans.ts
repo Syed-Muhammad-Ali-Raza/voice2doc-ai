@@ -18,7 +18,13 @@ export const PLANS: PlanDefinition[] = [
     name: 'Free',
     priceMonthly: 0,
     aiDocuments: FREE_DOCUMENT_LIMIT,
-    perks: [`${FREE_DOCUMENT_LIMIT} free AI documents`, 'Basic AI formatting', 'TXT & Markdown export', 'Templates'],
+    perks: [
+      `${FREE_DOCUMENT_LIMIT} free AI documents`,
+      'Basic AI formatting',
+      'TXT & Markdown export',
+      'Templates',
+      'Voice guide demos',
+    ],
   },
   {
     id: 'pro',
@@ -26,14 +32,39 @@ export const PLANS: PlanDefinition[] = [
     priceMonthly: 19,
     aiDocuments: 'unlimited',
     highlight: true,
-    perks: ['Unlimited AI documents', 'Premium AI', 'Faster processing', 'Unlimited exports'],
+    perks: [
+      'Unlimited AI documents',
+      'Premium AI + Atelier Tone DNA',
+      'Faster processing',
+      'Unlimited exports',
+      'Meeting Memory graph',
+    ],
   },
   {
     id: 'business',
     name: 'Business',
     priceMonthly: 49,
     aiDocuments: 'unlimited',
-    perks: ['Unlimited AI documents', 'Team collaboration', 'Shared workspaces', 'API access'],
+    perks: [
+      'Everything in Pro',
+      'Team workspaces + live collab',
+      'Timestamp comments & presence',
+      'Shared brand kits',
+      'Compliance audit log (30-day view)',
+    ],
+  },
+  {
+    id: 'enterprise',
+    name: 'Enterprise',
+    priceMonthly: 149,
+    aiDocuments: 'unlimited',
+    perks: [
+      'Everything in Business',
+      'Trust & Compliance Vault',
+      'Custom audio retention + residency hints',
+      'Full data export & content wipe',
+      'Priority support · SSO-ready (roadmap)',
+    ],
   },
 ]
 

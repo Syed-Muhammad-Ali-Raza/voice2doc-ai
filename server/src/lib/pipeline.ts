@@ -189,7 +189,7 @@ export async function runJobPipeline(jobId: string) {
       .prepare('SELECT plan, trials_used, trials_limit FROM users WHERE id = ?')
       .get(job.user_id) as { plan: string; trials_used: number; trials_limit: number }
 
-    const unlimited = user.plan === 'pro' || user.plan === 'business'
+    const unlimited = user.plan === 'pro' || user.plan === 'business' || user.plan === 'enterprise'
     const docId = uuid()
     const now = new Date().toISOString()
 
