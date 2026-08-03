@@ -16,7 +16,7 @@ import {
 export const billingRouter = Router()
 
 const planSchema = z.object({
-  plan: z.enum(['free', 'pro', 'business']),
+  plan: z.enum(['free', 'pro', 'business', 'enterprise']),
 })
 
 billingRouter.get('/config', (_req, res) => {
@@ -53,7 +53,7 @@ billingRouter.get('/entitlements', (req: AuthedRequest, res) => {
     plan: row.plan,
     trialsUsed: row.trials_used,
     trialsLimit: row.trials_limit,
-    unlimitedAi: row.plan === 'pro' || row.plan === 'business',
+    unlimitedAi: row.plan === 'pro' || row.plan === 'business' || row.plan === 'enterprise',
     stripeEnabled: isStripeConfigured(),
     stripeStatus: row.stripe_status,
     hasStripeCustomer: Boolean(row.stripe_customer_id),
@@ -120,6 +120,15 @@ billingRouter.post('/checkout', async (req: AuthedRequest, res) => {
 
   const priceId = priceIdForPlan(target as PaidPlan)
   if (!priceId) {
+    // Enterprise (or missing price IDs) can still switch locally for demos.
+    if (target === 'enterprise') {
+      setUserPlan(user.id, target, {
+        stripeStatus: 'local',
+        stripeSubscriptionId: null,
+      })
+      res.json({ url: null, plan: target, mode: 'local' })
+      return
+    }
     res.status(400).json({
       error: `Missing STRIPE_PRICE_${target.toUpperCase()} in server/.env`,
     })

@@ -14,7 +14,7 @@ export function WorkspacesPage() {
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
-  const canCreate = plan === 'pro' || plan === 'business'
+  const canCreate = plan === 'pro' || plan === 'business' || plan === 'enterprise'
 
   const refresh = async () => {
     if (env.useMockApi) {

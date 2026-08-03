@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { z } from 'zod'
 import { db } from '../db.js'
 import { requireAuth, type AuthedRequest } from '../middleware/auth.js'
+import { writeAudit } from '../lib/compliance.js'
 
 export const preferencesRouter = Router()
 
@@ -89,5 +90,6 @@ preferencesRouter.put('/', requireAuth, (req: AuthedRequest, res) => {
   }
   const next = { ...readPrefs(req.user!.sub), ...parsed.data }
   writePrefs(req.user!.sub, next)
+  writeAudit(req.user!.sub, 'preferences.updated', { meta: { keys: Object.keys(parsed.data) } })
   res.json(next)
 })
