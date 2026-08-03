@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid'
 import { db } from '../db.js'
 import type { AuthedRequest } from '../middleware/auth.js'
 import { canAccessDocument, requireMember } from '../lib/teams.js'
+import { commentsRouter } from './comments.js'
 
 export const documentsRouter = Router()
 
@@ -115,10 +116,31 @@ documentsRouter.patch('/:id', (req: AuthedRequest, res) => {
     tone: string
     language: string
     favorite: boolean
+    baseUpdatedAt: string
+    baseRevision: number
   }>
+
+  const revRow = db
+    .prepare(`SELECT revision, updated_at FROM documents WHERE id = ?`)
+    .get(req.params.id) as { revision: number; updated_at: string } | undefined
+  const currentRevision = revRow?.revision ?? 1
+  const currentUpdatedAt = revRow?.updated_at ?? row.updated_at
+
+  if (
+    (body.baseUpdatedAt && body.baseUpdatedAt !== currentUpdatedAt) ||
+    (typeof body.baseRevision === 'number' && body.baseRevision !== currentRevision)
+  ) {
+    res.status(409).json({
+      error: 'Conflict: document was updated elsewhere',
+      document: mapDoc(getDoc(req.params.id)!),
+      revision: currentRevision,
+    })
+    return
+  }
+
   const now = new Date().toISOString()
   db.prepare(
-    `UPDATE documents SET title = ?, type = ?, content = ?, tone = ?, language = ?, favorite = ?, updated_at = ?
+    `UPDATE documents SET title = ?, type = ?, content = ?, tone = ?, language = ?, favorite = ?, updated_at = ?, revision = revision + 1
      WHERE id = ?`,
   ).run(
     body.title ?? row.title,
@@ -130,7 +152,8 @@ documentsRouter.patch('/:id', (req: AuthedRequest, res) => {
     now,
     req.params.id,
   )
-  res.json(mapDoc(getDoc(req.params.id)!))
+  const updated = getDoc(req.params.id)!
+  res.json({ ...mapDoc(updated), revision: currentRevision + 1 })
 })
 
 documentsRouter.delete('/:id', (req: AuthedRequest, res) => {
@@ -184,3 +207,5 @@ documentsRouter.post('/:id/share', (req: AuthedRequest, res) => {
   )
   res.json(mapDoc(getDoc(req.params.id)!))
 })
+
+documentsRouter.use('/:id/comments', commentsRouter)

@@ -16,7 +16,9 @@ import {
   Sparkles,
 } from 'lucide-react'
 import { GlassCard } from '../components/GlassCard'
+import { CollabPanel } from '../components/CollabPanel'
 import { env } from '../config/env'
+import { ApiError } from '../lib/apiClient'
 import { aiService } from '../services/aiService'
 import { documentService } from '../services/documentService'
 import { integrationService } from '../services/integrationService'
@@ -34,15 +36,35 @@ export function EditorPage() {
   const [title, setTitle] = useState(doc?.title ?? '')
   const [busy, setBusy] = useState<string | null>(null)
   const [savedAt, setSavedAt] = useState<string | null>(null)
+  const [baseUpdatedAt, setBaseUpdatedAt] = useState(doc?.updatedAt ?? '')
   const saveTimer = useRef<number | null>(null)
 
   const persistRemote = (patch: { content?: string; title?: string }) => {
     if (env.useMockApi || !doc) return
     if (saveTimer.current) window.clearTimeout(saveTimer.current)
     saveTimer.current = window.setTimeout(() => {
-      void documentService.update(doc.id, patch).catch(() => {
-        showToast('Cloud save failed')
-      })
+      void documentService
+        .update(doc.id, { ...patch, baseUpdatedAt } as Partial<typeof doc> & { baseUpdatedAt?: string })
+        .then((updated) => {
+          setBaseUpdatedAt(updated.updatedAt)
+          setSavedAt(new Date().toLocaleTimeString())
+        })
+        .catch((err) => {
+          if (err instanceof ApiError && err.status === 409) {
+            showToast('Conflict — document changed elsewhere. Reloading…')
+            void documentService.get(doc.id).then((fresh) => {
+              if (!fresh) return
+              updateDocument(doc.id, fresh)
+              setBaseUpdatedAt(fresh.updatedAt)
+              setTitle(fresh.title)
+              if (editor && fresh.content !== editor.getHTML()) {
+                editor.commands.setContent(fresh.content)
+              }
+            })
+            return
+          }
+          showToast('Cloud save failed')
+        })
     }, 600)
   }
 
@@ -71,8 +93,24 @@ export function EditorPage() {
   )
 
   useEffect(() => {
-    if (doc) setTitle(doc.title)
+    if (doc) {
+      setTitle(doc.title)
+      setBaseUpdatedAt(doc.updatedAt)
+    }
   }, [doc])
+
+  const reloadFromServer = () => {
+    if (!doc || env.useMockApi) return
+    void documentService.get(doc.id).then((fresh) => {
+      if (!fresh) return
+      updateDocument(doc.id, fresh)
+      setBaseUpdatedAt(fresh.updatedAt)
+      setTitle(fresh.title)
+      if (editor && fresh.content !== editor.getHTML()) {
+        editor.commands.setContent(fresh.content)
+      }
+    })
+  }
 
   if (!doc) {
     return (
@@ -221,6 +259,8 @@ export function EditorPage() {
           <EditorContent editor={editor} />
         </div>
       </GlassCard>
+
+      <CollabPanel documentId={doc.id} onMirroredChange={reloadFromServer} />
 
       <GlassCard className="p-4">
         <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-ink dark:text-dark-ink">
