@@ -23,6 +23,7 @@ import {
 import { BrandWordmark } from './Brand'
 import { Toast } from './Toast'
 import { VoiceGuideButton } from './VoiceGuideButton'
+import { StudioChatbot } from './StudioChatbot'
 import { useT } from '../i18n/useT'
 import { authService } from '../services/authService'
 import { useAuthStore } from '../store/auth'
@@ -148,6 +149,7 @@ export function AppShell() {
       </div>
       <Toast />
       <VoiceGuideButton />
+      <StudioChatbot />
     </div>
   )
 }

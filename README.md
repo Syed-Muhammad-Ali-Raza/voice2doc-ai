@@ -2,7 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-**Phase 10 (current):** Trust & Compliance Vault — retention, audit log, residency hints, export/wipe — plus an **Enterprise** plan.
+**Phase 11 (current):** Studio AI Chatbot — floating in-app assistant with Help, Document, and Meeting modes.
 
 ---
 
@@ -36,8 +36,8 @@ npm test
 | 7 Meeting Memory Graph | Done | Speakers, actions, recurring decisions |
 | 8 Document Atelier | Done | Brand kits, Tone DNA, voice guide |
 | 9 Live Studio Collab | Done | Presence, timestamp comments, conflict saves |
-| **10 Trust & Compliance Vault** | **Current** | Retention, audit, residency, Enterprise plan |
-| 11 Studio AI Chatbot | Planned | In-app assistant for docs & help |
+| 10 Trust & Compliance Vault | Done | Retention, audit, residency, Enterprise plan |
+| **11 Studio AI Chatbot** | **Current** | In-app assistant for docs & help |
 | 12 Echo Score | Planned | Spoken-intent vs draft fidelity |
 | 13 Voice Twin | Planned | Personal writing voice from past docs |
 | 14 Speak-the-UI | Planned | Voice-controlled navigation |
@@ -52,6 +52,27 @@ npm test
 | Pro | $19 | Unlimited AI, Atelier, Memory |
 | Business | $49 | Teams, live collab, audit preview |
 | **Enterprise** | **$149** | Compliance Vault, retention, export/wipe |
+
+---
+
+## Phase 11 — Studio AI Chatbot
+
+Inside the **app shell**:
+
+1. Open the floating **Studio AI** bubble.
+2. Pick mode: **Help**, **Document**, or **Meeting**.
+3. Ask for guidance, rewrite hints, or action summaries.
+4. If privacy analytics is disabled, replies still work but chat history is ephemeral.
+
+### API
+
+| Method | Path |
+|--------|------|
+| GET | `/api/chat/sessions` |
+| POST | `/api/chat/sessions` |
+| GET | `/api/chat/sessions/:id/messages` |
+| POST | `/api/chat/sessions/:id/messages` |
+| POST (SSE) | `/api/chat/sessions/:id/messages?stream=1` |
 
 ---
 

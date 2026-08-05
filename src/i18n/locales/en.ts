@@ -218,6 +218,23 @@ export const en: MessageTree = {
     auditTitle: 'Audit log',
     auditEmpty: 'No audit events yet.',
   },
+  chat: {
+    title: 'Studio AI',
+    subtitle: 'Help, document, and meeting copilot in one panel.',
+    modeHelp: 'Help',
+    modeDocument: 'Document',
+    modeMeeting: 'Meeting',
+    loadFailed: 'Could not load chatbot',
+    createFailed: 'Could not start chat session',
+    sendFailed: 'Could not send message',
+    empty: 'Ask anything about the app, your draft, or meeting threads.',
+    placeholder: 'Ask the studio assistant…',
+    askAbout: 'Ask about',
+    document: 'document',
+    you: 'You',
+    assistant: 'Assistant',
+    ephemeral: 'Chat history is not persisted because privacy analytics is off.',
+  },
   privacy: {
     updated: 'Last updated: July 31, 2026',
     title: 'Privacy Policy',
@@ -285,7 +302,7 @@ export const en: MessageTree = {
       privacyA: 'Read the Privacy Policy for collection, audio handling, integrations, and your controls.',
       chatbotQ: 'Will there be an AI chatbot?',
       chatbotA:
-        'Yes — Phase 11 plans a Studio AI Chatbot that can answer product questions, draft from transcripts, and sit beside the editor. It is not shipping yet.',
+        'Yes — the Studio AI chatbot is live in the app shell. It supports Help, Document, and Meeting modes.',
     },
   },
 }
