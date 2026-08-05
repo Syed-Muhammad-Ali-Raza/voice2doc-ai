@@ -260,7 +260,7 @@ Collaboration anchored to *voice time*, not just document paragraphs:
 - UI: `CollabPanel` on editor page
 - Unit tests: `src/lib/collab.test.ts`
 
-### Phase 10 — Trust & Compliance Vault (current)
+### Phase 10 — Trust & Compliance Vault (complete)
 Enterprise trust without losing Studio Glass clarity:
 
 - Retention policies (purge audio after N days; keep docs toggle)
@@ -273,15 +273,16 @@ Enterprise trust without losing Studio Glass clarity:
 - Plans: Free / Pro / Business / **Enterprise** (Trust Vault + residency)
 - Unit tests: `src/lib/compliance.test.ts`
 
-### Phase 11 — Studio AI Chatbot (planned)
+### Phase 11 — Studio AI Chatbot (current)
 An in-product assistant that lives in the Studio Glass shell — not a generic widget:
 
-- Floating studio chat with accent/typography inherited from Phase 6 preferences
-- Context modes: **Help** (product FAQs), **Document** (ask about the open draft/transcript), **Meeting** (summarize action items from Memory Graph)
-- Streaming replies via existing AI job worker patterns; cite transcript timestamps when answering from audio
-- Optional tools: “insert reply into editor”, “create Meeting Notes draft”, “open Help Center article”
-- Respect privacy analytics toggle + compliance retention (no chat logs when opted out)
-- API sketch: `POST /api/chat/sessions`, `POST /api/chat/sessions/:id/messages` (SSE), `GET /api/chat/sessions`
+- Floating studio chat with accent/typography inherited from Phase 6 preferences (`StudioChatbot` in app shell)
+- Context modes: **Help** (product FAQs), **Document** (focused doc hints), **Meeting** (summaries from Memory threads)
+- Supports JSON replies and SSE typing stream (`?stream=1`)
+- Optional tool-like flows: guide to editor export, billing upgrade, memory follow-up
+- Respects privacy analytics toggle: chat still works, but history is not persisted when analytics are off
+- Tables: `chat_sessions`, `chat_messages`
+- API: `GET/POST /api/chat/sessions`, `GET /api/chat/sessions/:id/messages`, `POST /api/chat/sessions/:id/messages`
 
 ### Phase 12 — Echo Score (planned)
 Measure how much spoken intent survived into the finished document:

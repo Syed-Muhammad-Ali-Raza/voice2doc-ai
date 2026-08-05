@@ -25,6 +25,8 @@ import { migrateAtelierTables } from './lib/atelier.js'
 import { atelierRouter } from './routes/atelier.js'
 import { migrateCollabTables } from './lib/collab.js'
 import { attachCollabWebSocket } from './ws/collabHub.js'
+import { migrateChatTables } from './lib/chat.js'
+import { chatRouter } from './routes/chat.js'
 import { migrateComplianceTables } from './lib/compliance.js'
 import { complianceRouter } from './routes/compliance.js'
 import { workspacesRouter } from './routes/workspaces.js'
@@ -36,6 +38,7 @@ migratePreferencesColumn()
 migrateMemoryTables()
 migrateAtelierTables()
 migrateCollabTables()
+migrateChatTables()
 migrateComplianceTables()
 
 const PORT = Number(process.env.PORT || 3001)
@@ -71,7 +74,7 @@ app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     service: 'voice2doc-api',
-    phase: 10,
+    phase: 11,
     openai: Boolean(process.env.OPENAI_API_KEY),
     stripe: isStripeConfigured(),
     teams: true,
@@ -80,6 +83,7 @@ app.get('/api/health', (_req, res) => {
     memory: true,
     atelier: true,
     collab: true,
+    chat: true,
     compliance: true,
   })
 })
@@ -103,6 +107,7 @@ app.use('/api/integrations', requireAuth, integrationsRouter)
 app.use('/api/preferences', preferencesRouter)
 app.use('/api/memory', memoryRouter)
 app.use('/api/atelier', atelierRouter)
+app.use('/api/chat', chatRouter)
 app.use('/api/compliance', complianceRouter)
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
@@ -116,6 +121,6 @@ attachCollabWebSocket(server)
 
 server.listen(PORT, () => {
   console.log(
-    `Voice2Doc API listening on http://localhost:${PORT} (phase 10, collab ws=/ws/collab, stripe=${isStripeConfigured()})`,
+    `Voice2Doc API listening on http://localhost:${PORT} (phase 11, collab ws=/ws/collab, stripe=${isStripeConfigured()})`,
   )
 })
