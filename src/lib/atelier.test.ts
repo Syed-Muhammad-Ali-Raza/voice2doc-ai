@@ -56,8 +56,8 @@ describe('atelier brand + tone', () => {
 })
 
 describe('voice guide tours', () => {
-  it('exposes six tours', () => {
-    expect(VOICE_TOURS).toHaveLength(6)
+  it('exposes seven tours', () => {
+    expect(VOICE_TOURS).toHaveLength(7)
     expect(getTour('record').steps.length).toBeGreaterThan(2)
   })
 

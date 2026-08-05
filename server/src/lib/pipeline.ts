@@ -4,6 +4,7 @@ import path from 'node:path'
 import OpenAI, { toFile } from 'openai'
 import { db, uploadsDir } from '../db.js'
 import { generateDocumentHtml } from './generateDoc.js'
+import { upsertEchoScore } from './echo.js'
 
 export const STAGES = ['Uploading', 'Transcribing', 'Understanding', 'Formatting', 'Finalizing'] as const
 export type StageName = (typeof STAGES)[number]
@@ -227,6 +228,18 @@ export async function runJobPipeline(jobId: string) {
     })
 
     finish()
+
+    try {
+      upsertEchoScore({
+        userId: job.user_id,
+        documentId: docId,
+        transcript,
+        draftHtml: formatted.content,
+        jobId,
+      })
+    } catch {
+      /* echo score is non-blocking */
+    }
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Job failed'
     updateJob(jobId, {

@@ -2,7 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-**Phase 11 (current):** Studio AI Chatbot — floating in-app assistant with Help, Document, and Meeting modes.
+**Phase 12 (current):** Echo Score — measure how much spoken intent survived into the finished draft.
 
 ---
 
@@ -37,8 +37,8 @@ npm test
 | 8 Document Atelier | Done | Brand kits, Tone DNA, voice guide |
 | 9 Live Studio Collab | Done | Presence, timestamp comments, conflict saves |
 | 10 Trust & Compliance Vault | Done | Retention, audit, residency, Enterprise plan |
-| **11 Studio AI Chatbot** | **Current** | In-app assistant for docs & help |
-| 12 Echo Score | Planned | Spoken-intent vs draft fidelity |
+| 11 Studio AI Chatbot | Done | In-app assistant for docs & help |
+| **12 Echo Score** | **Current** | Spoken-intent vs draft fidelity |
 | 13 Voice Twin | Planned | Personal writing voice from past docs |
 | 14 Speak-the-UI | Planned | Voice-controlled navigation |
 
@@ -52,6 +52,28 @@ npm test
 | Pro | $19 | Unlimited AI, Atelier, Memory |
 | Business | $49 | Teams, live collab, audit preview |
 | **Enterprise** | **$149** | Compliance Vault, retention, export/wipe |
+
+---
+
+## Phase 12 — Echo Score
+
+Open a document in the **editor**:
+
+1. See the **Echo Score** (0–100) under the draft.
+2. Review **lost phrases** — commitments, actions, and details spoken but missing from the draft.
+3. Tap **Restore** to insert a lost phrase, or **Rescore** after edits.
+4. Scores are computed when an audio job finishes, and can be recomputed anytime.
+
+### API
+
+| Method | Path |
+|--------|------|
+| GET | `/api/echo/:documentId` |
+| POST | `/api/echo/:documentId/recompute` |
+
+### Unit tests
+
+Pure scoring helpers live in `src/lib/echoScore.ts`. Run `npm test`.
 
 ---
 

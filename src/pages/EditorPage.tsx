@@ -17,6 +17,7 @@ import {
 } from 'lucide-react'
 import { GlassCard } from '../components/GlassCard'
 import { CollabPanel } from '../components/CollabPanel'
+import { EchoScorePanel } from '../components/EchoScorePanel'
 import { env } from '../config/env'
 import { ApiError } from '../lib/apiClient'
 import { aiService } from '../services/aiService'
@@ -259,6 +260,22 @@ export function EditorPage() {
           <EditorContent editor={editor} />
         </div>
       </GlassCard>
+
+      <EchoScorePanel
+        documentId={doc.id}
+        draftHtml={editor?.getHTML() ?? doc.content}
+        onRestore={(phrase) => {
+          if (!editor) return
+          const safe = phrase
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+          editor.chain().focus().insertContent(`<ul><li>${safe}</li></ul>`).run()
+          const content = editor.getHTML()
+          updateDocument(doc.id, { content })
+          persistRemote({ content })
+        }}
+      />
 
       <CollabPanel documentId={doc.id} onMirroredChange={reloadFromServer} />
 

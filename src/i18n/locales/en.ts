@@ -171,6 +171,41 @@ export const en: MessageTree = {
     tourSettings: 'Language & theme',
     tourAtelier: 'Document Atelier',
     tourHelp: 'Help & privacy',
+    tourEcho: 'Echo Score',
+  },
+  echo: {
+    title: 'Echo Score',
+    subtitle: 'How much spoken intent survived into this draft.',
+    recompute: 'Rescore',
+    scoring: 'Scoring…',
+    recomputed: 'Echo Score updated from the current draft.',
+    recomputeFailed: 'Could not recompute Echo Score',
+    empty: 'Process audio into this document to generate an Echo Score.',
+    kept: '{{kept}} of {{total}} spoken intents kept',
+    lostTitle: 'Lost phrases',
+    lostEmpty: 'No missing spoken intents detected.',
+    restore: 'Restore',
+    restored: 'Phrase restored into the draft.',
+    band: {
+      high: 'Strong echo',
+      mid: 'Partial echo',
+      low: 'Weak echo',
+    },
+    kind: {
+      commitment: 'Commitment',
+      action: 'Action',
+      detail: 'Detail',
+      topic: 'Topic',
+    },
+    tip: {
+      restore_commitments: 'Restore {{count}} missing commitment(s) from the transcript.',
+      restore_actions: 'Restore {{count}} missing action item(s).',
+      restore_details: 'Bring back {{count}} number, date, or named detail(s).',
+      low_coverage: 'The draft drifted from what was spoken — restore lost phrases below.',
+      high_fidelity: 'Strong fidelity — spoken intent is well represented.',
+      no_transcript: 'No transcript is linked yet. Record or import audio to score this draft.',
+      empty_draft: 'The draft is empty, so nothing spoken can echo yet.',
+    },
   },
   collab: {
     title: 'Live studio',
@@ -303,6 +338,9 @@ export const en: MessageTree = {
       chatbotQ: 'Will there be an AI chatbot?',
       chatbotA:
         'Yes — the Studio AI chatbot is live in the app shell. It supports Help, Document, and Meeting modes.',
+      echoQ: 'What is Echo Score?',
+      echoA:
+        'Echo Score compares the spoken transcript with your finished draft and highlights lost commitments, actions, and details so you can restore them.',
     },
   },
 }

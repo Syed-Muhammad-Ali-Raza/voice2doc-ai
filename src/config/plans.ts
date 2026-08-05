@@ -38,6 +38,7 @@ export const PLANS: PlanDefinition[] = [
       'Faster processing',
       'Unlimited exports',
       'Meeting Memory graph',
+      'Echo Score on drafts',
     ],
   },
   {
