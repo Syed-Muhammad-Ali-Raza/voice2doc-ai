@@ -1,4 +1,4 @@
-export type VoiceTourId = 'welcome' | 'record' | 'memory' | 'settings' | 'atelier' | 'help'
+export type VoiceTourId = 'welcome' | 'record' | 'memory' | 'settings' | 'atelier' | 'help' | 'echo'
 
 export interface VoiceTour {
   id: VoiceTourId
@@ -65,7 +65,17 @@ export const VOICE_TOURS: VoiceTour[] = [
       'Need written help? Open Help Center from the website footer.',
       'Privacy Policy explains how audio and integrations are handled.',
       'Contact us if you are stuck. Demo mode replies instantly.',
-      'A future Studio AI Chatbot will answer questions beside the editor.',
+      'The Studio AI chatbot in the app shell can answer product questions beside the editor.',
+    ],
+  },
+  {
+    id: 'echo',
+    titleKey: 'voiceGuide.tourEcho',
+    steps: [
+      'Echo Score measures how much of what you said survived into the finished document.',
+      'Open any document in the editor to see the score, lost phrases, and restore tips.',
+      'Rescore after edits to check whether commitments and action items are still present.',
+      'Tap Restore on a lost phrase to drop it back into the draft as a bullet.',
     ],
   },
 ]

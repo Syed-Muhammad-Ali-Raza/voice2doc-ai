@@ -220,6 +220,12 @@ export function exportUserData(userId: string) {
 
   const policy = getPolicy(userId)
   const audit = listAudit(userId, 100)
+  const echoScores = db
+    .prepare(
+      `SELECT document_id, score, coverage, kept_count, total_count, lost_phrases_json, tips_json, updated_at
+       FROM echo_scores WHERE user_id = ?`,
+    )
+    .all(userId)
   writeAudit(userId, 'compliance.data_exported', { meta: { documentCount: documents.length } })
 
   return {
@@ -238,6 +244,7 @@ export function exportUserData(userId: string) {
     policy,
     documents,
     integrations,
+    echoScores,
     audit,
   }
 }
@@ -261,6 +268,11 @@ export function wipeUserContent(userId: string) {
   db.prepare(
     `DELETE FROM doc_comments WHERE document_id IN (SELECT id FROM documents WHERE user_id = ?)`,
   ).run(userId)
+  db.prepare(`DELETE FROM echo_scores WHERE user_id = ?`).run(userId)
+  db.prepare(
+    `DELETE FROM chat_messages WHERE session_id IN (SELECT id FROM chat_sessions WHERE user_id = ?)`,
+  ).run(userId)
+  db.prepare(`DELETE FROM chat_sessions WHERE user_id = ?`).run(userId)
   db.prepare(`DELETE FROM jobs WHERE user_id = ?`).run(userId)
   db.prepare(`DELETE FROM audio_assets WHERE user_id = ?`).run(userId)
   db.prepare(`DELETE FROM documents WHERE user_id = ?`).run(userId)

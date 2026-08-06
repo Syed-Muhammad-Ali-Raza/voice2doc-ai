@@ -273,7 +273,7 @@ Enterprise trust without losing Studio Glass clarity:
 - Plans: Free / Pro / Business / **Enterprise** (Trust Vault + residency)
 - Unit tests: `src/lib/compliance.test.ts`
 
-### Phase 11 — Studio AI Chatbot (current)
+### Phase 11 — Studio AI Chatbot (complete)
 An in-product assistant that lives in the Studio Glass shell — not a generic widget:
 
 - Floating studio chat with accent/typography inherited from Phase 6 preferences (`StudioChatbot` in app shell)
@@ -284,12 +284,16 @@ An in-product assistant that lives in the Studio Glass shell — not a generic w
 - Tables: `chat_sessions`, `chat_messages`
 - API: `GET/POST /api/chat/sessions`, `GET /api/chat/sessions/:id/messages`, `POST /api/chat/sessions/:id/messages`
 
-### Phase 12 — Echo Score (planned)
+### Phase 12 — Echo Score (current)
 Measure how much spoken intent survived into the finished document:
 
-- Diff spoken transcript vs final draft; surface “lost phrases”
-- Score 0–100 with tips to restore missing commitments/action items
-- Hook into job finalization + editor sidebar
+- Diff spoken transcript vs final draft; surface “lost phrases” (commitments, actions, details, topics)
+- Score 0–100 with restore tips; one-click insert back into the editor
+- Computed on job finalization and via `POST /api/echo/:documentId/recompute`
+- Table: `echo_scores` (one row per document)
+- API: `GET /api/echo/:documentId`, `POST /api/echo/:documentId/recompute`
+- UI: `EchoScorePanel` on the editor page
+- Unit tests: `src/lib/echoScore.test.ts`
 
 ### Phase 13 — Voice Twin (planned)
 Learn a personal writing voice from past documents and apply as living Tone DNA:
@@ -307,7 +311,7 @@ Expand Voice Guide into voice-controlled navigation:
 
 ### Public legal & support surfaces
 - `/privacy` — Privacy Policy (collection, audio, integrations, rights)
-- `/help` — Help Center (topics + FAQ, including Phase 11 chatbot preview note)
+- `/help` — Help Center (topics + FAQ, including chatbot and Echo Score)
 
 ---
 
