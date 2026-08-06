@@ -226,6 +226,12 @@ export function exportUserData(userId: string) {
        FROM echo_scores WHERE user_id = ?`,
     )
     .all(userId)
+  const voiceTwins = db
+    .prepare(
+      `SELECT id, name, version, workspace_id, voice_summary, do_json, dont_json, sample_opening, markers_json, source_doc_ids_json, created_at, updated_at
+       FROM voice_twins WHERE user_id = ?`,
+    )
+    .all(userId)
   writeAudit(userId, 'compliance.data_exported', { meta: { documentCount: documents.length } })
 
   return {
@@ -245,6 +251,7 @@ export function exportUserData(userId: string) {
     documents,
     integrations,
     echoScores,
+    voiceTwins,
     audit,
   }
 }
@@ -269,6 +276,7 @@ export function wipeUserContent(userId: string) {
     `DELETE FROM doc_comments WHERE document_id IN (SELECT id FROM documents WHERE user_id = ?)`,
   ).run(userId)
   db.prepare(`DELETE FROM echo_scores WHERE user_id = ?`).run(userId)
+  db.prepare(`DELETE FROM voice_twins WHERE user_id = ?`).run(userId)
   db.prepare(
     `DELETE FROM chat_messages WHERE session_id IN (SELECT id FROM chat_sessions WHERE user_id = ?)`,
   ).run(userId)

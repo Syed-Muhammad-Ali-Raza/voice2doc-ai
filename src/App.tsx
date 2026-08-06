@@ -28,6 +28,7 @@ import { HelpCenterPage } from './pages/HelpCenterPage'
 import { MemoryPage } from './pages/MemoryPage'
 import { AtelierPage } from './pages/AtelierPage'
 import { CompliancePage } from './pages/CompliancePage'
+import { VoiceTwinPage } from './pages/VoiceTwinPage'
 
 export default function App() {
   return (
@@ -60,6 +61,7 @@ export default function App() {
             <Route path="integrations" element={<IntegrationsPage />} />
             <Route path="memory" element={<MemoryPage />} />
             <Route path="atelier" element={<AtelierPage />} />
+            <Route path="voice-twin" element={<VoiceTwinPage />} />
             <Route path="compliance" element={<CompliancePage />} />
             <Route path="billing" element={<BillingPage />} />
             <Route path="settings" element={<SettingsPage />} />
