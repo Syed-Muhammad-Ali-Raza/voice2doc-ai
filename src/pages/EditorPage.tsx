@@ -23,6 +23,7 @@ import { ApiError } from '../lib/apiClient'
 import { aiService } from '../services/aiService'
 import { documentService } from '../services/documentService'
 import { integrationService } from '../services/integrationService'
+import { voiceTwinService } from '../services/voiceTwinService'
 import { useDocsStore } from '../store/docs'
 import { useSettingsStore } from '../store/auth'
 
@@ -38,6 +39,7 @@ export function EditorPage() {
   const [busy, setBusy] = useState<string | null>(null)
   const [savedAt, setSavedAt] = useState<string | null>(null)
   const [baseUpdatedAt, setBaseUpdatedAt] = useState(doc?.updatedAt ?? '')
+  const [twinId, setTwinId] = useState<string | null>(null)
   const saveTimer = useRef<number | null>(null)
 
   const persistRemote = (patch: { content?: string; title?: string }) => {
@@ -100,6 +102,16 @@ export function EditorPage() {
     }
   }, [doc])
 
+  useEffect(() => {
+    let cancelled = false
+    void voiceTwinService.list().then((data) => {
+      if (!cancelled) setTwinId(data.twins[0]?.id ?? null)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const reloadFromServer = () => {
     if (!doc || env.useMockApi) return
     void documentService.get(doc.id).then((fresh) => {
@@ -131,9 +143,30 @@ export function EditorPage() {
       const next = await aiService.transform(editor.getHTML(), action, doc.language)
       editor.commands.setContent(next)
       updateDocument(doc.id, { content: next })
+      persistRemote({ content: next })
       showToast(`AI ${action} applied`)
     } catch {
       showToast('AI assist failed')
+    } finally {
+      setBusy(null)
+    }
+  }
+
+  const soundLikeMe = async () => {
+    if (!editor) return
+    if (!twinId) {
+      showToast('Train a Voice Twin first in Voice Twin')
+      return
+    }
+    setBusy('voice-twin')
+    try {
+      const result = await voiceTwinService.apply(twinId, editor.getHTML())
+      editor.commands.setContent(result.html)
+      updateDocument(doc.id, { content: result.html })
+      persistRemote({ content: result.html })
+      showToast(`Voice Twin applied · match ${result.matchScore}`)
+    } catch {
+      showToast('Voice Twin apply failed')
     } finally {
       setBusy(null)
     }
@@ -303,6 +336,14 @@ export function EditorPage() {
               {busy === key ? 'Working…' : label}
             </button>
           ))}
+          <button
+            type="button"
+            className="btn-primary"
+            disabled={busy !== null}
+            onClick={() => void soundLikeMe()}
+          >
+            {busy === 'voice-twin' ? 'Working…' : 'Sound like me'}
+          </button>
         </div>
       </GlassCard>
 

@@ -39,6 +39,7 @@ export const PLANS: PlanDefinition[] = [
       'Unlimited exports',
       'Meeting Memory graph',
       'Echo Score on drafts',
+      'Voice Twin · Sound like me',
     ],
   },
   {
@@ -50,7 +51,7 @@ export const PLANS: PlanDefinition[] = [
       'Everything in Pro',
       'Team workspaces + live collab',
       'Timestamp comments & presence',
-      'Shared brand kits',
+      'Shared brand kits + workspace Voice Twins',
       'Compliance audit log (30-day view)',
     ],
   },

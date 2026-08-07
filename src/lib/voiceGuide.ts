@@ -1,4 +1,4 @@
-export type VoiceTourId = 'welcome' | 'record' | 'memory' | 'settings' | 'atelier' | 'help' | 'echo'
+export type VoiceTourId = 'welcome' | 'record' | 'memory' | 'settings' | 'atelier' | 'help' | 'echo' | 'voiceTwin'
 
 export interface VoiceTour {
   id: VoiceTourId
@@ -76,6 +76,16 @@ export const VOICE_TOURS: VoiceTour[] = [
       'Open any document in the editor to see the score, lost phrases, and restore tips.',
       'Rescore after edits to check whether commitments and action items are still present.',
       'Tap Restore on a lost phrase to drop it back into the draft as a bullet.',
+    ],
+  },
+  {
+    id: 'voiceTwin',
+    titleKey: 'voiceGuide.tourVoiceTwin',
+    steps: [
+      'Voice Twin learns how you write from past documents.',
+      'Open Voice Twin in the sidebar, pick source docs, and train a versioned twin.',
+      'Optionally include Meeting Memory decisions as tone hints.',
+      'In the editor, tap Sound like me to rewrite the draft in your voice.',
     ],
   },
 ]

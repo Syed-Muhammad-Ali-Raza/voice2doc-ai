@@ -29,6 +29,8 @@ import { migrateChatTables } from './lib/chat.js'
 import { chatRouter } from './routes/chat.js'
 import { migrateEchoTables } from './lib/echo.js'
 import { echoRouter } from './routes/echo.js'
+import { migrateVoiceTwinTables } from './lib/voiceTwin.js'
+import { voiceTwinRouter } from './routes/voiceTwin.js'
 import { migrateComplianceTables } from './lib/compliance.js'
 import { complianceRouter } from './routes/compliance.js'
 import { workspacesRouter } from './routes/workspaces.js'
@@ -42,6 +44,7 @@ migrateAtelierTables()
 migrateCollabTables()
 migrateChatTables()
 migrateEchoTables()
+migrateVoiceTwinTables()
 migrateComplianceTables()
 
 const PORT = Number(process.env.PORT || 3001)
@@ -77,7 +80,7 @@ app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     service: 'voice2doc-api',
-    phase: 12,
+    phase: 13,
     openai: Boolean(process.env.OPENAI_API_KEY),
     stripe: isStripeConfigured(),
     teams: true,
@@ -88,6 +91,7 @@ app.get('/api/health', (_req, res) => {
     collab: true,
     chat: true,
     echo: true,
+    voiceTwin: true,
     compliance: true,
   })
 })
@@ -113,6 +117,7 @@ app.use('/api/memory', memoryRouter)
 app.use('/api/atelier', atelierRouter)
 app.use('/api/chat', chatRouter)
 app.use('/api/echo', echoRouter)
+app.use('/api/voice-twins', voiceTwinRouter)
 app.use('/api/compliance', complianceRouter)
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
@@ -126,6 +131,6 @@ attachCollabWebSocket(server)
 
 server.listen(PORT, () => {
   console.log(
-    `Voice2Doc API listening on http://localhost:${PORT} (phase 12, collab ws=/ws/collab, stripe=${isStripeConfigured()})`,
+    `Voice2Doc API listening on http://localhost:${PORT} (phase 13, collab ws=/ws/collab, stripe=${isStripeConfigured()})`,
   )
 })
