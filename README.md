@@ -2,7 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-**Phase 12 (current):** Echo Score — measure how much spoken intent survived into the finished draft.
+**Phase 13 (current):** Voice Twin — learn your writing voice from past docs and apply “Sound like me”.
 
 ---
 
@@ -38,8 +38,8 @@ npm test
 | 9 Live Studio Collab | Done | Presence, timestamp comments, conflict saves |
 | 10 Trust & Compliance Vault | Done | Retention, audit, residency, Enterprise plan |
 | 11 Studio AI Chatbot | Done | In-app assistant for docs & help |
-| **12 Echo Score** | **Current** | Spoken-intent vs draft fidelity |
-| 13 Voice Twin | Planned | Personal writing voice from past docs |
+| 12 Echo Score | Done | Spoken-intent vs draft fidelity |
+| **13 Voice Twin** | **Current** | Personal writing voice from past docs |
 | 14 Speak-the-UI | Planned | Voice-controlled navigation |
 
 ---
@@ -52,6 +52,31 @@ npm test
 | Pro | $19 | Unlimited AI, Atelier, Memory |
 | Business | $49 | Teams, live collab, audit preview |
 | **Enterprise** | **$149** | Compliance Vault, retention, export/wipe |
+
+---
+
+## Phase 13 — Voice Twin
+
+Open **Voice Twin** in the sidebar:
+
+1. Select source documents (or leave empty for your five most recent).
+2. Optionally include Meeting Memory decisions as tone hints.
+3. Train a versioned twin — formality, hedging, openings, and do/don’t rules are learned automatically.
+4. In the editor, tap **Sound like me** to rewrite the open draft in that voice.
+
+### API
+
+| Method | Path |
+|--------|------|
+| GET | `/api/voice-twins` |
+| POST | `/api/voice-twins/train` |
+| GET | `/api/voice-twins/:id` |
+| POST | `/api/voice-twins/:id/apply` |
+| DELETE | `/api/voice-twins/:id` |
+
+### Unit tests
+
+Pure voice markers live in `src/lib/voiceTwin.ts`. Run `npm test`.
 
 ---
 

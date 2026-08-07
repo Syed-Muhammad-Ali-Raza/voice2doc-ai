@@ -284,7 +284,7 @@ An in-product assistant that lives in the Studio Glass shell — not a generic w
 - Tables: `chat_sessions`, `chat_messages`
 - API: `GET/POST /api/chat/sessions`, `GET /api/chat/sessions/:id/messages`, `POST /api/chat/sessions/:id/messages`
 
-### Phase 12 — Echo Score (current)
+### Phase 12 — Echo Score (complete)
 Measure how much spoken intent survived into the finished document:
 
 - Diff spoken transcript vs final draft; surface “lost phrases” (commitments, actions, details, topics)
@@ -295,12 +295,17 @@ Measure how much spoken intent survived into the finished document:
 - UI: `EchoScorePanel` on the editor page
 - Unit tests: `src/lib/echoScore.test.ts`
 
-### Phase 13 — Voice Twin (planned)
+### Phase 13 — Voice Twin (current)
 Learn a personal writing voice from past documents and apply as living Tone DNA:
 
-- Train from selected docs / Memory decisions
-- One-click “sound like me” on AI assist
-- Versioned twins per workspace
+- Train from selected docs and optional Memory decision titles
+- Versioned twins per user (optional workspace scope)
+- Markers: formality, sentence length, hedge rate, first-person / imperative rates
+- One-click **Sound like me** in the editor AI assist
+- Table: `voice_twins`
+- API: `GET/POST /api/voice-twins`, `POST /api/voice-twins/train`, `POST /api/voice-twins/:id/apply`, `DELETE /api/voice-twins/:id`
+- UI: `/app/voice-twin` + editor apply button
+- Unit tests: `src/lib/voiceTwin.test.ts`
 
 ### Phase 14 — Speak-the-UI (planned)
 Expand Voice Guide into voice-controlled navigation:
@@ -311,7 +316,7 @@ Expand Voice Guide into voice-controlled navigation:
 
 ### Public legal & support surfaces
 - `/privacy` — Privacy Policy (collection, audio, integrations, rights)
-- `/help` — Help Center (topics + FAQ, including chatbot and Echo Score)
+- `/help` — Help Center (topics + FAQ, including chatbot, Echo Score, Voice Twin)
 
 ---
 
