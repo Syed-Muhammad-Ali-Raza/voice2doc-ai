@@ -120,4 +120,15 @@ export const fr: MessageTree = {
     baskervilleKarla: 'Libre Baskerville + Karla',
     bricolageManrope: 'Bricolage + Manrope',
   },
+  voiceGuide: {
+    speakTitle: 'Navigation vocale',
+    speakSubtitle: 'Contrôlez l\'application avec votre voix. Essayez "Ouvrir mémoire", "Enregistrer" ou "Exporter vers Notion".',
+    speakUnsupported: 'La reconnaissance vocale n\'est pas disponible dans ce navigateur.',
+    listening: 'Écoute… Parlez maintenant',
+    startListening: 'Démarrer le contrôle vocal',
+    stopListening: 'Arrêter l\'écoute',
+    commandRecognized: 'Commande reconnue : "{{command}}"',
+    commandNotRecognized: 'Commande non reconnue : "{{phrase}}"',
+    openDocToExport: 'Veuillez ouvrir un document pour l\'exporter vers Notion.',
+  },
 }

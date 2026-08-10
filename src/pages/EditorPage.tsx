@@ -112,6 +112,28 @@ export function EditorPage() {
     }
   }, [])
 
+  useEffect(() => {
+    const handleVoiceAction = (e: Event) => {
+      const customEvent = e as CustomEvent
+      if (customEvent.detail?.actionType === 'export-notion') {
+        if (!doc) return
+        const exportNotion = async () => {
+          try {
+            const result = await integrationService.exportDoc('notion', doc.id)
+            showToast(result.message || 'Sent to Notion')
+            if (result.externalUrl) window.open(result.externalUrl, '_blank', 'noopener')
+          } catch (err) {
+            showToast(err instanceof Error ? err.message : 'Notion export failed — connect in Integrations')
+          }
+        }
+        void exportNotion()
+      }
+    }
+    window.addEventListener('v2d-voice-action', handleVoiceAction)
+    return () => window.removeEventListener('v2d-voice-action', handleVoiceAction)
+  }, [doc])
+
+
   const reloadFromServer = () => {
     if (!doc || env.useMockApi) return
     void documentService.get(doc.id).then((fresh) => {

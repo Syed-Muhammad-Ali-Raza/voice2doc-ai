@@ -120,4 +120,15 @@ export const es: MessageTree = {
     baskervilleKarla: 'Libre Baskerville + Karla',
     bricolageManrope: 'Bricolage + Manrope',
   },
+  voiceGuide: {
+    speakTitle: 'Navegación por voz',
+    speakSubtitle: 'Controla la aplicación con tu voz. Di "Abrir memoria", "Grabar" o "Exportar a Notion".',
+    speakUnsupported: 'El reconocimiento de voz no está disponible en este navegador.',
+    listening: 'Escuchando… Habla ahora',
+    startListening: 'Iniciar control por voz',
+    stopListening: 'Detener escucha',
+    commandRecognized: 'Comando reconocido: "{{command}}"',
+    commandNotRecognized: 'Comando no reconocido: "{{phrase}}"',
+    openDocToExport: 'Por favor, abre un documento para exportar a Notion.',
+  },
 }

@@ -8,6 +8,7 @@ import {
   purgeExpiredAudio,
   setPolicy,
   wipeUserContent,
+  writeAudit,
 } from '../lib/compliance.js'
 
 export const complianceRouter = Router()
@@ -53,3 +54,14 @@ complianceRouter.post('/wipe', requireAuth, (req: AuthedRequest, res) => {
   }
   res.json(wipeUserContent(req.user!.sub))
 })
+
+complianceRouter.post('/log-voice-command', requireAuth, (req: AuthedRequest, res) => {
+  const parsed = z.object({ command: z.string().min(1).max(200) }).safeParse(req.body)
+  if (!parsed.success) {
+    res.status(400).json({ error: 'Invalid voice command log payload' })
+    return
+  }
+  writeAudit(req.user!.sub, 'ui.voice_command', { meta: { command: parsed.data.command } })
+  res.status(201).json({ ok: true })
+})
+
