@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Pause, Play, Square, Trash2 } from 'lucide-react'
 import { AiConfigForm, defaultConfig } from '../components/AiConfigForm'
 import { GlassCard } from '../components/GlassCard'
@@ -17,6 +17,7 @@ function formatTime(total: number) {
 
 export function RecordPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const setPendingConfig = useDocsStore((s) => s.setPendingConfig)
   const setPendingAudio = useDocsStore((s) => s.setPendingAudio)
   const showToast = useDocsStore((s) => s.showToast)
@@ -30,6 +31,33 @@ export function RecordPage() {
   const mediaRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
   const timerRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    if (searchParams.get('start') === '1') {
+      navigate('/app/record', { replace: true })
+      void startRecording()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
+
+  useEffect(() => {
+    const handleVoiceAction = (e: Event) => {
+      const customEvent = e as CustomEvent
+      if (customEvent.detail?.actionType === 'start-recording') {
+        if (status === 'idle') {
+          void startRecording()
+        } else if (status === 'paused') {
+          resumeRecording()
+        }
+      } else if (customEvent.detail?.actionType === 'stop-recording') {
+        if (status === 'recording' || status === 'paused') {
+          stopRecording()
+        }
+      }
+    }
+    window.addEventListener('v2d-voice-action', handleVoiceAction)
+    return () => window.removeEventListener('v2d-voice-action', handleVoiceAction)
+  }, [status])
 
   useEffect(() => {
     return () => {

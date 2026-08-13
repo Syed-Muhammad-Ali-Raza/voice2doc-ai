@@ -119,4 +119,15 @@ export const ur: MessageTree = {
     baskervilleKarla: 'Libre Baskerville + Karla',
     bricolageManrope: 'Bricolage + Manrope',
   },
+  voiceGuide: {
+    speakTitle: 'صوتی نیویگیشن',
+    speakSubtitle: 'اپنی آواز سے ایپ کو کنٹرول کریں۔ "میموری کھولیں"، "ریکارڈنگ شروع کریں"، یا "notion export" کہیں۔',
+    speakUnsupported: 'اس براؤزر میں آواز کی شناخت دستیاب نہیں ہے۔',
+    listening: 'سُن رہا ہے… اب بولیں',
+    startListening: 'صوتی کنٹرول شروع کریں',
+    stopListening: 'سننا بند کریں',
+    commandRecognized: 'کمانڈ کی شناخت ہو گئی: "{{command}}"',
+    commandNotRecognized: 'کمانڈ کی شناخت نہیں ہو سکی: "{{phrase}}"',
+    openDocToExport: 'براہ کرم نویشن میں ایکسپورٹ کرنے کے لیے ایک دستاویز کھولیں۔',
+  },
 }

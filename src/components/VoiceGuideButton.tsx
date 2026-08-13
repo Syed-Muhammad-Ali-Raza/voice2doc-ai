@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Headphones, Square, Volume2, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Headphones, Mic, Square, Volume2, X } from 'lucide-react'
 import { useT } from '../i18n/useT'
 import {
   localeToSpeechLang,
@@ -9,23 +10,39 @@ import {
   VOICE_TOURS,
   type VoiceTourId,
 } from '../lib/voiceGuide'
+import { parseVoiceCommand } from '../lib/speechRecognition'
+import { complianceService } from '../services/complianceService'
 import { useSettingsStore } from '../store/auth'
+import { useDocsStore } from '../store/docs'
 
 export function VoiceGuideButton() {
   const t = useT()
+  const navigate = useNavigate()
   const locale = useSettingsStore((s) => s.locale)
+  const showToast = useDocsStore((s) => s.showToast)
   const [open, setOpen] = useState(false)
   const [playing, setPlaying] = useState(false)
   const [step, setStep] = useState(0)
   const [supported, setSupported] = useState(true)
+  const [listening, setListening] = useState(false)
+  const [recogSupported, setRecogSupported] = useState(true)
+  const recognitionRef = useRef<any>(null)
 
   useEffect(() => {
     setSupported(speechSupported())
-    return () => stopVoiceGuide()
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    setRecogSupported(Boolean(SpeechRecognition))
+    return () => {
+      stopVoiceGuide()
+      if (recognitionRef.current) {
+        recognitionRef.current.stop()
+      }
+    }
   }, [])
 
   const start = (id: VoiceTourId) => {
     if (!supported) return
+    stopVoiceControl()
     setPlaying(true)
     setStep(0)
     playVoiceGuide(id, {
@@ -38,6 +55,69 @@ export function VoiceGuideButton() {
   const stop = () => {
     stopVoiceGuide()
     setPlaying(false)
+  }
+
+  const startVoiceControl = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (!SpeechRecognition) return
+
+    setListening(true)
+    stop() // Stop playing guide if active
+
+    const rec = new SpeechRecognition()
+    rec.continuous = false
+    rec.interimResults = false
+    rec.lang = localeToSpeechLang(locale)
+
+    rec.onresult = async (event: any) => {
+      const text = event.results[0][0]?.transcript
+      if (!text) return
+
+      const match = parseVoiceCommand(text)
+      if (match) {
+        showToast(t('voiceGuide.commandRecognized', { command: match.label }))
+        try {
+          await complianceService.logVoiceCommand(match.label)
+        } catch (err) {
+          console.error('Failed to log voice command', err)
+        }
+
+        if (match.action === 'navigate') {
+          navigate(match.path!)
+        } else if (match.action === 'voice-action') {
+          if (match.pathHint && !window.location.pathname.startsWith(match.pathHint)) {
+            if (match.actionType === 'start-recording') {
+              navigate('/app/record?start=1')
+            } else if (match.actionType === 'export-notion') {
+              showToast(t('voiceGuide.openDocToExport'))
+            }
+          } else {
+            window.dispatchEvent(new CustomEvent('v2d-voice-action', { detail: { actionType: match.actionType } }))
+          }
+        }
+      } else {
+        showToast(t('voiceGuide.commandNotRecognized', { phrase: text }))
+      }
+    }
+
+    rec.onerror = (e: any) => {
+      console.error(e)
+      setListening(false)
+    }
+
+    rec.onend = () => {
+      setListening(false)
+    }
+
+    recognitionRef.current = rec
+    rec.start()
+  }
+
+  const stopVoiceControl = () => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop()
+    }
+    setListening(false)
   }
 
   return (
@@ -82,6 +162,44 @@ export function VoiceGuideButton() {
                   </button>
                 </div>
               )}
+
+              <div className="my-3 border-t border-border dark:border-dark-border" />
+              <div className="space-y-2">
+                <div className="flex flex-col gap-0.5">
+                  <p className="font-display text-sm font-semibold text-ink dark:text-dark-ink flex items-center gap-1.5">
+                    <Mic size={14} className="text-accent" /> {t('voiceGuide.speakTitle')}
+                  </p>
+                  <p className="text-[10px] text-muted leading-tight">{t('voiceGuide.speakSubtitle')}</p>
+                </div>
+
+                {!recogSupported ? (
+                  <p className="text-xs text-muted">{t('voiceGuide.speakUnsupported')}</p>
+                ) : listening ? (
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      className="btn-primary w-full justify-center py-2 flex items-center gap-2 bg-red-500 hover:bg-red-600 border-red-500 text-white animate-pulse"
+                      onClick={stopVoiceControl}
+                    >
+                      <Mic size={14} />
+                      {t('voiceGuide.stopListening')}
+                    </button>
+                    <p className="text-xs text-center text-red-500 font-medium animate-pulse">
+                      {t('voiceGuide.listening')}
+                    </p>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    className="btn-secondary w-full justify-center py-2 flex items-center gap-2"
+                    onClick={startVoiceControl}
+                    disabled={playing}
+                  >
+                    <Mic size={14} />
+                    {t('voiceGuide.startListening')}
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>

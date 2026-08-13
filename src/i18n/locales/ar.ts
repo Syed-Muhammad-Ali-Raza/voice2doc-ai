@@ -119,4 +119,15 @@ export const ar: MessageTree = {
     baskervilleKarla: 'Libre Baskerville + Karla',
     bricolageManrope: 'Bricolage + Manrope',
   },
+  voiceGuide: {
+    speakTitle: 'التوجيه الصوتي',
+    speakSubtitle: 'التحكم في التطبيق بصوتك. جرب "افتح الذاكرة"، "ابدأ التسجيل"، أو "تصدير إلى نوشن".',
+    speakUnsupported: 'التعرف على الكلام غير مدعوم في هذا المتصفح.',
+    listening: 'جاري الاستماع… تحدث الآن',
+    startListening: 'تفعيل التحكم الصوتي',
+    stopListening: 'إيقاف الاستماع',
+    commandRecognized: 'تم التعرف على الأمر: "{{command}}"',
+    commandNotRecognized: 'لم يتم التعرف على الأمر: "{{phrase}}"',
+    openDocToExport: 'يرجى فتح مستند لتصديره إلى نوشن.',
+  },
 }
