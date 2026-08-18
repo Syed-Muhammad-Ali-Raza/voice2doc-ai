@@ -80,7 +80,7 @@ app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     service: 'voice2doc-api',
-    phase: 13,
+    phase: 14,
     openai: Boolean(process.env.OPENAI_API_KEY),
     stripe: isStripeConfigured(),
     teams: true,
