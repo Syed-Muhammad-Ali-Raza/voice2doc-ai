@@ -130,5 +130,13 @@ export const de: MessageTree = {
     commandRecognized: 'Befehl erkannt: "{{command}}"',
     commandNotRecognized: 'Befehl nicht erkannt: "{{phrase}}"',
     openDocToExport: 'Bitte öffnen Sie ein Dokument, um es nach Notion zu exportieren.',
+    cmdStartRecording: 'Aufnahme starten',
+    cmdStopRecording: 'Aufnahme stoppen',
+    cmdExportNotion: 'Nach Notion exportieren',
+    confirmTitle: 'Haben Sie „{{command}}“ gesagt?',
+    confirmYes: 'Bestätigen',
+    confirmNo: 'Abbrechen',
+    commandCancelled: 'Sprachbefehl abgebrochen.',
+    keepListening: 'Weiter auf Befehle hören',
   },
 }

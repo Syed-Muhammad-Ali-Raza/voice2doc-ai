@@ -130,5 +130,13 @@ export const es: MessageTree = {
     commandRecognized: 'Comando reconocido: "{{command}}"',
     commandNotRecognized: 'Comando no reconocido: "{{phrase}}"',
     openDocToExport: 'Por favor, abre un documento para exportar a Notion.',
+    cmdStartRecording: 'Iniciar grabación',
+    cmdStopRecording: 'Detener grabación',
+    cmdExportNotion: 'Exportar a Notion',
+    confirmTitle: '¿Dijiste "{{command}}"?',
+    confirmYes: 'Confirmar',
+    confirmNo: 'Cancelar',
+    commandCancelled: 'Comando de voz cancelado.',
+    keepListening: 'Seguir escuchando comandos',
   },
 }
