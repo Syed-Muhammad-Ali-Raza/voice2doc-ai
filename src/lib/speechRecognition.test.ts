@@ -38,6 +38,50 @@ describe('Speech Recognition Command Parsing', () => {
     expect(parseVoiceCommand('open documents')?.commandId).toBe('open-documents')
   })
 
+  it('identifies the expanded navigation commands', () => {
+    expect(parseVoiceCommand('go home')?.commandId).toBe('open-dashboard')
+    expect(parseVoiceCommand('dashboard')?.commandId).toBe('open-dashboard')
+    expect(parseVoiceCommand('new recording')?.commandId).toBe('open-record')
+    expect(parseVoiceCommand('upload audio')?.commandId).toBe('open-upload')
+    expect(parseVoiceCommand('open templates')?.commandId).toBe('open-templates')
+    expect(parseVoiceCommand('open integrations')?.commandId).toBe('open-integrations')
+    expect(parseVoiceCommand('open billing')?.commandId).toBe('open-billing')
+    expect(parseVoiceCommand('manage subscription')?.commandId).toBe('open-billing')
+  })
+
+  it('is locale-aware when a locale is provided', () => {
+    expect(parseVoiceCommand('abrir memoria', 'es')?.commandId).toBe('open-memory')
+    expect(parseVoiceCommand('ouvrir mémoire', 'fr')?.commandId).toBe('open-memory')
+    expect(parseVoiceCommand('speicher öffnen', 'de')?.commandId).toBe('open-memory')
+
+    // English always remains a fallback inside any locale
+    expect(parseVoiceCommand('open memory', 'es')?.commandId).toBe('open-memory')
+
+    // Phrases from other locales are ignored for the active locale
+    expect(parseVoiceCommand('abrir memoria', 'en')).toBeNull()
+    expect(parseVoiceCommand('iniciar grabación', 'en')).toBeNull()
+    expect(parseVoiceCommand('aufnahme starten', 'es')).toBeNull()
+  })
+
+  it('marks impactful commands as needing confirmation', () => {
+    expect(parseVoiceCommand('stop recording')?.confirm).toBe(true)
+    expect(parseVoiceCommand('export to notion')?.confirm).toBe(true)
+    expect(parseVoiceCommand('start recording')?.confirm).toBeFalsy()
+    expect(parseVoiceCommand('open memory')?.confirm).toBeFalsy()
+  })
+
+  it('exposes translated label keys and stable paths', () => {
+    const memory = parseVoiceCommand('open memory')
+    expect(memory?.labelKey).toBe('nav.memory')
+    expect(memory?.path).toBe('/app/memory')
+    expect(memory?.action).toBe('navigate')
+
+    const start = parseVoiceCommand('start recording')
+    expect(start?.labelKey).toBe('voiceGuide.cmdStartRecording')
+    expect(start?.actionType).toBe('start-recording')
+    expect(start?.pathHint).toBe('/app/record')
+  })
+
   it('returns null for unrecognized text', () => {
     expect(parseVoiceCommand('Hello world')).toBeNull()
     expect(parseVoiceCommand('What is the weather today?')).toBeNull()

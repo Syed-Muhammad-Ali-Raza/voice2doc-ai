@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Headphones, Mic, Square, Volume2, X } from 'lucide-react'
+import { Check, Headphones, Mic, Square, Volume2, X } from 'lucide-react'
 import { useT } from '../i18n/useT'
 import {
   localeToSpeechLang,
@@ -10,7 +10,7 @@ import {
   VOICE_TOURS,
   type VoiceTourId,
 } from '../lib/voiceGuide'
-import { parseVoiceCommand } from '../lib/speechRecognition'
+import { parseVoiceCommand, type MatchedCommand } from '../lib/speechRecognition'
 import { complianceService } from '../services/complianceService'
 import { useSettingsStore } from '../store/auth'
 import { useDocsStore } from '../store/docs'
@@ -26,7 +26,10 @@ export function VoiceGuideButton() {
   const [supported, setSupported] = useState(true)
   const [listening, setListening] = useState(false)
   const [recogSupported, setRecogSupported] = useState(true)
+  const [pending, setPending] = useState<MatchedCommand | null>(null)
+  const [continuous, setContinuous] = useState(false)
   const recognitionRef = useRef<any>(null)
+  const continuousRef = useRef(false)
 
   useEffect(() => {
     setSupported(speechSupported())
@@ -34,11 +37,18 @@ export function VoiceGuideButton() {
     setRecogSupported(Boolean(SpeechRecognition))
     return () => {
       stopVoiceGuide()
+      continuousRef.current = false
       if (recognitionRef.current) {
         recognitionRef.current.stop()
       }
     }
   }, [])
+
+  useEffect(() => {
+    if (!pending) return
+    const timer = window.setTimeout(() => setPending(null), 8000)
+    return () => window.clearTimeout(timer)
+  }, [pending])
 
   const start = (id: VoiceTourId) => {
     if (!supported) return
@@ -57,56 +67,92 @@ export function VoiceGuideButton() {
     setPlaying(false)
   }
 
+  const executeCommand = async (match: MatchedCommand) => {
+    showToast(t('voiceGuide.commandRecognized', { command: t(match.labelKey) }))
+    try {
+      await complianceService.logVoiceCommand(match.label)
+    } catch (err) {
+      console.error('Failed to log voice command', err)
+    }
+
+    if (match.action === 'navigate') {
+      navigate(match.path!)
+    } else if (match.action === 'voice-action') {
+      if (match.pathHint && !window.location.pathname.startsWith(match.pathHint)) {
+        if (match.actionType === 'start-recording') {
+          navigate('/app/record?start=1')
+        } else if (match.actionType === 'export-notion') {
+          showToast(t('voiceGuide.openDocToExport'))
+        }
+      } else {
+        window.dispatchEvent(new CustomEvent('v2d-voice-action', { detail: { actionType: match.actionType } }))
+      }
+    }
+  }
+
+  const handleTranscript = (text: string) => {
+    const match = parseVoiceCommand(text, locale)
+    if (!match) {
+      showToast(t('voiceGuide.commandNotRecognized', { phrase: text }))
+      return
+    }
+    if (match.confirm) {
+      setPending(match)
+      return
+    }
+    void executeCommand(match)
+  }
+
+  const confirmPending = () => {
+    if (!pending) return
+    const match = pending
+    setPending(null)
+    void executeCommand(match)
+  }
+
+  const cancelPending = () => {
+    if (!pending) return
+    const label = pending.label
+    setPending(null)
+    showToast(t('voiceGuide.commandCancelled'))
+    complianceService.logVoiceCommand(label, 'cancelled').catch(() => {})
+  }
+
   const startVoiceControl = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SpeechRecognition) return
 
     setListening(true)
+    setPending(null)
     stop() // Stop playing guide if active
 
     const rec = new SpeechRecognition()
-    rec.continuous = false
+    rec.continuous = continuousRef.current
     rec.interimResults = false
     rec.lang = localeToSpeechLang(locale)
 
-    rec.onresult = async (event: any) => {
-      const text = event.results[0][0]?.transcript
+    rec.onresult = (event: any) => {
+      const text = event.results[event.results.length - 1][0]?.transcript
       if (!text) return
-
-      const match = parseVoiceCommand(text)
-      if (match) {
-        showToast(t('voiceGuide.commandRecognized', { command: match.label }))
-        try {
-          await complianceService.logVoiceCommand(match.label)
-        } catch (err) {
-          console.error('Failed to log voice command', err)
-        }
-
-        if (match.action === 'navigate') {
-          navigate(match.path!)
-        } else if (match.action === 'voice-action') {
-          if (match.pathHint && !window.location.pathname.startsWith(match.pathHint)) {
-            if (match.actionType === 'start-recording') {
-              navigate('/app/record?start=1')
-            } else if (match.actionType === 'export-notion') {
-              showToast(t('voiceGuide.openDocToExport'))
-            }
-          } else {
-            window.dispatchEvent(new CustomEvent('v2d-voice-action', { detail: { actionType: match.actionType } }))
-          }
-        }
-      } else {
-        showToast(t('voiceGuide.commandNotRecognized', { phrase: text }))
-      }
+      handleTranscript(text)
     }
 
     rec.onerror = (e: any) => {
       console.error(e)
+      continuousRef.current = continuousRef.current && e?.error !== 'aborted'
       setListening(false)
     }
 
     rec.onend = () => {
       setListening(false)
+      if (continuousRef.current) {
+        try {
+          rec.start()
+          setListening(true)
+        } catch {
+          // start() throws if the recognizer is busy ending; user can retry
+        }
+      }
     }
 
     recognitionRef.current = rec
@@ -114,14 +160,48 @@ export function VoiceGuideButton() {
   }
 
   const stopVoiceControl = () => {
+    continuousRef.current = false
+    setContinuous(false)
     if (recognitionRef.current) {
       recognitionRef.current.stop()
     }
     setListening(false)
   }
 
+  const toggleContinuous = () => {
+    const next = !continuous
+    setContinuous(next)
+    if (listening) {
+      // Restart so the new mode applies immediately
+      stopVoiceControl()
+      if (next) {
+        continuousRef.current = true
+        setContinuous(true)
+        startVoiceControl()
+      }
+    } else {
+      continuousRef.current = next
+    }
+  }
+
   return (
     <div className="fixed right-4 bottom-4 z-[60] flex flex-col items-end gap-3 md:right-6 md:bottom-6">
+      {pending && (
+        <div className="glass-strong w-[min(100vw-2rem,22rem)] p-4 shadow-lg" role="alertdialog" aria-label={t('voiceGuide.confirmTitle', { command: t(pending.labelKey) })}>
+          <p className="text-sm font-medium text-ink dark:text-dark-ink">
+            {t('voiceGuide.confirmTitle', { command: t(pending.labelKey) })}
+          </p>
+          <div className="mt-3 flex gap-2">
+            <button type="button" className="btn-primary flex flex-1 items-center justify-center gap-1.5 py-2" onClick={confirmPending}>
+              <Check size={14} /> {t('voiceGuide.confirmYes')}
+            </button>
+            <button type="button" className="btn-secondary flex-1 py-2" onClick={cancelPending}>
+              {t('voiceGuide.confirmNo')}
+            </button>
+          </div>
+        </div>
+      )}
+
       {open && (
         <div className="glass-strong w-[min(100vw-2rem,22rem)] p-4 shadow-lg">
           <div className="mb-3 flex items-start justify-between gap-2">
@@ -174,30 +254,38 @@ export function VoiceGuideButton() {
 
                 {!recogSupported ? (
                   <p className="text-xs text-muted">{t('voiceGuide.speakUnsupported')}</p>
-                ) : listening ? (
-                  <div className="space-y-2">
-                    <button
-                      type="button"
-                      className="btn-primary w-full justify-center py-2 flex items-center gap-2 bg-red-500 hover:bg-red-600 border-red-500 text-white animate-pulse"
-                      onClick={stopVoiceControl}
-                    >
-                      <Mic size={14} />
-                      {t('voiceGuide.stopListening')}
-                    </button>
-                    <p className="text-xs text-center text-red-500 font-medium animate-pulse">
-                      {t('voiceGuide.listening')}
-                    </p>
-                  </div>
                 ) : (
-                  <button
-                    type="button"
-                    className="btn-secondary w-full justify-center py-2 flex items-center gap-2"
-                    onClick={startVoiceControl}
-                    disabled={playing}
-                  >
-                    <Mic size={14} />
-                    {t('voiceGuide.startListening')}
-                  </button>
+                  <>
+                    {listening ? (
+                      <div className="space-y-2">
+                        <button
+                          type="button"
+                          className="btn-primary w-full justify-center py-2 flex items-center gap-2 bg-red-500 hover:bg-red-600 border-red-500 text-white animate-pulse"
+                          onClick={stopVoiceControl}
+                        >
+                          <Mic size={14} />
+                          {t('voiceGuide.stopListening')}
+                        </button>
+                        <p className="text-xs text-center text-red-500 font-medium animate-pulse">
+                          {t('voiceGuide.listening')}
+                        </p>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn-secondary w-full justify-center py-2 flex items-center gap-2"
+                        onClick={startVoiceControl}
+                        disabled={playing}
+                      >
+                        <Mic size={14} />
+                        {t('voiceGuide.startListening')}
+                      </button>
+                    )}
+                    <label className="flex cursor-pointer items-center gap-2 text-xs text-muted">
+                      <input type="checkbox" checked={continuous} onChange={toggleContinuous} className="accent-[rgb(var(--studio-accent-rgb))]" />
+                      {t('voiceGuide.keepListening')}
+                    </label>
+                  </>
                 )}
               </div>
             </div>
