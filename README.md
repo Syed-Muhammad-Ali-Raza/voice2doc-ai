@@ -2,7 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-**Phase 13 (current):** Voice Twin — learn your writing voice from past docs and apply “Sound like me”.
+**Phase 14 (current):** Speak-the-UI — voice-controlled navigation with locale-aware commands and confirmation toasts.
 
 ---
 
@@ -39,8 +39,8 @@ npm test
 | 10 Trust & Compliance Vault | Done | Retention, audit, residency, Enterprise plan |
 | 11 Studio AI Chatbot | Done | In-app assistant for docs & help |
 | 12 Echo Score | Done | Spoken-intent vs draft fidelity |
-| **13 Voice Twin** | **Current** | Personal writing voice from past docs |
-| 14 Speak-the-UI | Planned | Voice-controlled navigation |
+| 13 Voice Twin | Done | Personal writing voice from past docs |
+| **14 Speak-the-UI** | **Current** | Voice-controlled navigation |
 
 ---
 
@@ -52,6 +52,30 @@ npm test
 | Pro | $19 | Unlimited AI, Atelier, Memory |
 | Business | $49 | Teams, live collab, audit preview |
 | **Enterprise** | **$149** | Compliance Vault, retention, export/wipe |
+
+---
+
+## Phase 14 — Speak-the-UI
+
+Open the **Voice guide** (headphones button, bottom-right) → **Voice Navigation**:
+
+1. Tap **Start Voice Control** and speak — recognition follows your UI language (English phrases always work too).
+2. Navigate hands-free: "Open Memory", "Go home", "Open billing", "Open integrations", …
+3. Control recording: "Start recording" / "Stop recording".
+4. Export: open a document, then say "Export to Notion".
+5. Impactful commands show a **confirmation card** before running; cancelling is audited as well.
+6. Toggle **Keep listening** for continuous command mode.
+7. Every recognized command lands in the compliance audit log (`ui.voice_command`).
+
+### API
+
+| Method | Path |
+|--------|------|
+| POST | `/api/compliance/log-voice-command` |
+
+### Unit tests
+
+Pure command parsing lives in `src/lib/speechRecognition.ts`. Run `npm test`.
 
 ---
 

@@ -1,279 +1,562 @@
+export type VoiceCommandId =
+  | 'start-recording'
+  | 'stop-recording'
+  | 'export-notion'
+  | 'open-dashboard'
+  | 'open-documents'
+  | 'open-record'
+  | 'open-upload'
+  | 'open-templates'
+  | 'open-integrations'
+  | 'open-memory'
+  | 'open-atelier'
+  | 'open-voice-twin'
+  | 'open-compliance'
+  | 'open-settings'
+  | 'open-billing'
+
 export interface MatchedCommand {
-  commandId: string
+  commandId: VoiceCommandId
   action: 'navigate' | 'voice-action'
   path?: string
   actionType?: string
   pathHint?: string
   label: string
+  labelKey: string
+  confirm?: boolean
 }
 
-export function parseVoiceCommand(text: string): MatchedCommand | null {
-  const norm = text.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"");
-  
-  // 1. Start recording
-  if (
-    norm.includes('start recording') ||
-    norm.includes('begin recording') ||
-    norm.includes('start record') ||
-    norm.includes('iniciar grabación') ||
-    norm.includes('iniciar grabacion') ||
-    norm.includes('comenzar grabación') ||
-    norm.includes('comenzar grabacion') ||
-    norm.includes('démarrer l\'enregistrement') ||
-    norm.includes('demarrer l\'enregistrement') ||
-    norm.includes('commencer l\'enregistrement') ||
-    norm.includes('commencer lenregistrement') ||
-    norm.includes('aufnahme starten') ||
-    norm.includes('aufnahme beginnen') ||
-    norm.includes('recording shuru') ||
-    norm.includes('ریکارڈنگ شروع') ||
-    norm.includes('ابدأ التسجيل') ||
-    norm.includes('ابدا التسجيل') ||
-    norm === 'record' ||
-    norm === 'grabar' ||
-    norm === 'enregistrer' ||
-    norm === 'aufnehmen' ||
-    norm === 'ریکارڈ' ||
-    norm === 'تسجيل'
-  ) {
-    return {
-      commandId: 'start-recording',
-      action: 'voice-action',
-      actionType: 'start-recording',
-      pathHint: '/app/record',
-      label: 'Start recording',
+type PhraseSet = { includes?: string[]; exact?: string[] }
+
+interface CommandDef {
+  id: VoiceCommandId
+  action: 'navigate' | 'voice-action'
+  path?: string
+  actionType?: string
+  pathHint?: string
+  label: string
+  labelKey: string
+  confirm?: boolean
+  phrases: Partial<Record<'en' | 'es' | 'fr' | 'de' | 'ur' | 'ar', PhraseSet>>
+}
+
+const SUPPORTED_LOCALES = ['en', 'es', 'fr', 'de', 'ur', 'ar'] as const
+
+const COMMANDS: CommandDef[] = [
+  {
+    id: 'start-recording',
+    action: 'voice-action',
+    actionType: 'start-recording',
+    pathHint: '/app/record',
+    label: 'Start recording',
+    labelKey: 'voiceGuide.cmdStartRecording',
+    phrases: {
+      en: {
+        includes: ['start recording', 'begin recording', 'start record'],
+        exact: ['record'],
+      },
+      es: {
+        includes: ['iniciar grabación', 'iniciar grabacion', 'comenzar grabación', 'comenzar grabacion'],
+        exact: ['grabar'],
+      },
+      fr: {
+        includes: ["démarrer l'enregistrement", "demarrer l'enregistrement", "commencer l'enregistrement", 'commencer lenregistrement'],
+        exact: ['enregistrer'],
+      },
+      de: {
+        includes: ['aufnahme starten', 'aufnahme beginnen'],
+        exact: ['aufnehmen'],
+      },
+      ur: {
+        includes: ['recording shuru', 'ریکارڈنگ شروع'],
+        exact: ['ریکارڈ'],
+      },
+      ar: {
+        includes: ['ابدأ التسجيل', 'ابدا التسجيل'],
+        exact: ['تسجيل'],
+      },
+    },
+  },
+  {
+    id: 'stop-recording',
+    action: 'voice-action',
+    actionType: 'stop-recording',
+    label: 'Stop recording',
+    labelKey: 'voiceGuide.cmdStopRecording',
+    confirm: true,
+    phrases: {
+      en: {
+        includes: ['stop recording', 'end recording', 'stop record', 'recording stop'],
+      },
+      es: {
+        includes: ['detener grabación', 'detener grabacion', 'parar grabación', 'parar grabacion'],
+      },
+      fr: {
+        includes: ["arrêter l'enregistrement", "arreter l'enregistrement", 'arrêter lenregistrement', 'stopper l\'enregistrement'],
+      },
+      de: {
+        includes: ['aufnahme stoppen', 'aufnahme beenden'],
+      },
+      ur: {
+        includes: ['recording roko', 'ریکارڈنگ روکیں'],
+      },
+      ar: {
+        includes: ['أوقف التسجيل', 'اوقف التسجيل', 'وقف التسجيل'],
+      },
+    },
+  },
+  {
+    id: 'export-notion',
+    action: 'voice-action',
+    actionType: 'export-notion',
+    pathHint: '/app/editor',
+    label: 'Export to Notion',
+    labelKey: 'voiceGuide.cmdExportNotion',
+    confirm: true,
+    phrases: {
+      en: {
+        includes: ['export to notion', 'send to notion', 'notion export'],
+      },
+      es: {
+        includes: ['exportar a notion', 'enviar a notion'],
+      },
+      fr: {
+        includes: ['exporter vers notion', 'exporter a notion', 'envoyer à notion', 'envoyer a notion'],
+      },
+      de: {
+        includes: ['nach notion exportieren', 'an notion senden'],
+      },
+      ur: {
+        includes: ['نویشن میں ایکسپورٹ'],
+      },
+      ar: {
+        includes: ['تصدير إلى نوشن', 'تصدير الى نوشن'],
+      },
+    },
+  },
+  {
+    id: 'open-dashboard',
+    action: 'navigate',
+    path: '/app',
+    label: 'Go home',
+    labelKey: 'nav.dashboard',
+    phrases: {
+      en: {
+        includes: ['go home', 'open dashboard', 'go to dashboard'],
+        exact: ['home', 'dashboard'],
+      },
+      es: {
+        includes: ['ir a inicio', 'abrir panel', 'ir al panel'],
+        exact: ['inicio', 'panel'],
+      },
+      fr: {
+        includes: ["aller à l'accueil", "aller a l'accueil", 'aller a laccueil', 'ouvrir tableau de bord'],
+        exact: ['accueil'],
+      },
+      de: {
+        includes: ['zur übersicht', 'zur ubersicht', 'zum dashboard', 'übersicht öffnen', 'ubersicht öffnen'],
+        exact: ['übersicht', 'ubersicht', 'dashboard'],
+      },
+      ur: {
+        includes: ['ڈیش بورڈ کھولیں', 'ہوم پر جائیں'],
+        exact: ['ہوم', 'ڈیش بورڈ'],
+      },
+      ar: {
+        includes: ['افتح لوحة التحكم', 'ع إلى الرئيسية', 'اذهب للرئيسية'],
+        exact: ['الرئيسية', 'لوحة التحكم'],
+      },
+    },
+  },
+  {
+    id: 'open-documents',
+    action: 'navigate',
+    path: '/app/documents',
+    label: 'Open Documents',
+    labelKey: 'nav.documents',
+    phrases: {
+      en: {
+        includes: ['open documents', 'go to documents'],
+        exact: ['documents'],
+      },
+      es: {
+        includes: ['abrir documentos', 'ir a documentos'],
+        exact: ['documentos'],
+      },
+      fr: {
+        includes: ['ouvrir documents', 'aller aux documents'],
+        exact: ['documents'],
+      },
+      de: {
+        includes: ['dokumente öffnen', 'zu den dokumenten'],
+        exact: ['dokumente'],
+      },
+      ur: {
+        includes: ['دستاویزات کھولیں'],
+        exact: ['دستاویزات'],
+      },
+      ar: {
+        includes: ['افتح المستندات'],
+        exact: ['المستندات'],
+      },
+    },
+  },
+  {
+    id: 'open-record',
+    action: 'navigate',
+    path: '/app/record',
+    label: 'Open Record',
+    labelKey: 'nav.record',
+    phrases: {
+      en: {
+        includes: ['open record page', 'go to record page', 'new recording'],
+      },
+      es: {
+        includes: ['nueva grabación', 'nueva grabacion', 'abrir grabadora'],
+      },
+      fr: {
+        includes: ['nouvel enregistrement', 'ouvrir enregistreur'],
+      },
+      de: {
+        includes: ['neue aufnahme', 'aufnahmeseite öffnen'],
+      },
+      ur: {
+        includes: ['نئی ریکارڈنگ'],
+      },
+      ar: {
+        includes: ['تسجيل جديد'],
+      },
+    },
+  },
+  {
+    id: 'open-upload',
+    action: 'navigate',
+    path: '/app/upload',
+    label: 'Open Upload',
+    labelKey: 'nav.upload',
+    phrases: {
+      en: {
+        includes: ['open upload', 'upload audio'],
+        exact: ['upload'],
+      },
+      es: {
+        includes: ['subir audio', 'abrir carga'],
+        exact: ['subir'],
+      },
+      fr: {
+        includes: ['importer audio', 'téléverser audio', 'televerser audio'],
+        exact: ['téléverser', 'televerser'],
+      },
+      de: {
+        includes: ['audio hochladen'],
+        exact: ['hochladen'],
+      },
+      ur: {
+        includes: ['آڈیو اپلوڈ کریں'],
+        exact: ['اپلوڈ'],
+      },
+      ar: {
+        includes: ['رفع الصوت', 'تحميل الصوت'],
+        exact: ['رفع'],
+      },
+    },
+  },
+  {
+    id: 'open-templates',
+    action: 'navigate',
+    path: '/app/templates',
+    label: 'Open Templates',
+    labelKey: 'nav.templates',
+    phrases: {
+      en: {
+        includes: ['open templates', 'go to templates'],
+        exact: ['templates'],
+      },
+      es: {
+        includes: ['abrir plantillas'],
+        exact: ['plantillas'],
+      },
+      fr: {
+        includes: ['ouvrir modèles', 'ouvrir modeles'],
+        exact: ['modèles', 'modeles'],
+      },
+      de: {
+        includes: ['vorlagen öffnen'],
+        exact: ['vorlagen'],
+      },
+      ur: {
+        includes: ['ٹیمپلیٹس کھولیں'],
+        exact: ['ٹیمپلیٹس'],
+      },
+      ar: {
+        includes: ['افتح القوالب'],
+        exact: ['القوالب'],
+      },
+    },
+  },
+  {
+    id: 'open-integrations',
+    action: 'navigate',
+    path: '/app/integrations',
+    label: 'Open Integrations',
+    labelKey: 'nav.integrations',
+    phrases: {
+      en: {
+        includes: ['open integrations', 'go to integrations'],
+        exact: ['integrations'],
+      },
+      es: {
+        includes: ['abrir integraciones'],
+        exact: ['integraciones'],
+      },
+      fr: {
+        includes: ['ouvrir intégrations', 'ouvrir integrations'],
+        exact: ['intégrations', 'integrations'],
+      },
+      de: {
+        includes: ['integrationen öffnen'],
+        exact: ['integrationen'],
+      },
+      ur: {
+        includes: ['انٹیگریشنز کھولیں'],
+        exact: ['انٹیگریشنز'],
+      },
+      ar: {
+        includes: ['افتح التكاملات'],
+        exact: ['التكاملات'],
+      },
+    },
+  },
+  {
+    id: 'open-memory',
+    action: 'navigate',
+    path: '/app/memory',
+    label: 'Open Memory',
+    labelKey: 'nav.memory',
+    phrases: {
+      en: {
+        includes: ['open memory', 'go to memory', 'view memory'],
+        exact: ['memory'],
+      },
+      es: {
+        includes: ['abrir memoria', 'ver memoria', 'ir a memoria'],
+        exact: ['memoria'],
+      },
+      fr: {
+        includes: ['ouvrir mémoire', 'ouvrir memoire', 'voir mémoire', 'voir memoire', 'aller à mémoire', 'aller a memoire'],
+        exact: ['mémoire', 'memoire'],
+      },
+      de: {
+        includes: ['speicher öffnen', 'speicher anzeigen', 'gehe zu speicher'],
+        exact: ['speicher'],
+      },
+      ur: {
+        includes: ['memory kholo', 'میموری کھولیں'],
+        exact: ['میموری'],
+      },
+      ar: {
+        includes: ['افتح الذاكرة'],
+        exact: ['الذاكرة'],
+      },
+    },
+  },
+  {
+    id: 'open-atelier',
+    action: 'navigate',
+    path: '/app/atelier',
+    label: 'Open Atelier',
+    labelKey: 'nav.atelier',
+    phrases: {
+      en: {
+        includes: ['open atelier'],
+        exact: ['atelier'],
+      },
+      es: {
+        includes: ['abrir atelier'],
+      },
+      fr: {
+        includes: ['ouvrir atelier'],
+      },
+      de: {
+        includes: ['atelier öffnen'],
+      },
+      ur: {
+        includes: ['atelier kholo', 'اٹیلیئر کھولیں'],
+        exact: ['اٹیلیئر'],
+      },
+      ar: {
+        includes: ['افتح المرسم', 'افتح اتيليه', 'افتح أتيليه'],
+        exact: ['المرسم', 'أتيليه', 'اتيليه'],
+      },
+    },
+  },
+  {
+    id: 'open-voice-twin',
+    action: 'navigate',
+    path: '/app/voice-twin',
+    label: 'Open Voice Twin',
+    labelKey: 'nav.voiceTwin',
+    phrases: {
+      en: {
+        includes: ['open voice twin', 'voice twin'],
+      },
+      es: {
+        includes: ['abrir voice twin'],
+      },
+      fr: {
+        includes: ['ouvrir voice twin'],
+      },
+      de: {
+        includes: ['voice twin öffnen'],
+      },
+      ur: {
+        includes: ['voice twin kholo', 'وائس ٹوئن کھولیں', 'وائس ٹوئن'],
+      },
+      ar: {
+        includes: ['افتح توأم الصوت', 'افتح توام الصوت', 'توأم الصوت', 'توام الصوت'],
+      },
+    },
+  },
+  {
+    id: 'open-compliance',
+    action: 'navigate',
+    path: '/app/compliance',
+    label: 'Open Trust',
+    labelKey: 'nav.compliance',
+    phrases: {
+      en: {
+        includes: ['open trust', 'open compliance'],
+        exact: ['trust', 'compliance'],
+      },
+      es: {
+        includes: ['abrir confianza', 'abrir cumplimiento'],
+        exact: ['confianza', 'cumplimiento'],
+      },
+      fr: {
+        includes: ['ouvrir confiance', 'ouvrir conformité', 'ouvrir conformite'],
+        exact: ['confiance', 'conformité', 'conformite'],
+      },
+      de: {
+        includes: ['vertrauen öffnen'],
+        exact: ['vertrauen'],
+      },
+      ur: {
+        includes: ['trust kholo', 'ٹرسٹ کھولیں'],
+        exact: ['ٹرسٹ'],
+      },
+      ar: {
+        includes: ['افتح الثقة'],
+        exact: ['الثقة'],
+      },
+    },
+  },
+  {
+    id: 'open-settings',
+    action: 'navigate',
+    path: '/app/settings',
+    label: 'Open Settings',
+    labelKey: 'nav.settings',
+    phrases: {
+      en: {
+        includes: ['open settings', 'go to settings'],
+        exact: ['settings'],
+      },
+      es: {
+        includes: ['abrir configuración', 'abrir configuracion'],
+        exact: ['configuración', 'configuracion'],
+      },
+      fr: {
+        includes: ['ouvrir paramètres', 'ouvrir parametres'],
+        exact: ['paramètres', 'parametres'],
+      },
+      de: {
+        includes: ['einstellungen öffnen'],
+        exact: ['einstellungen'],
+      },
+      ur: {
+        includes: ['settings kholo', 'ترتیبات کھولیں'],
+        exact: ['ترتیبات'],
+      },
+      ar: {
+        includes: ['افتح الإعدادات', 'افتح الاعدادات'],
+        exact: ['الإعدادات', 'الاعدادات'],
+      },
+    },
+  },
+  {
+    id: 'open-billing',
+    action: 'navigate',
+    path: '/app/billing',
+    label: 'Open Billing',
+    labelKey: 'nav.billing',
+    phrases: {
+      en: {
+        includes: ['open billing', 'manage plan', 'manage subscription'],
+        exact: ['billing'],
+      },
+      es: {
+        includes: ['abrir facturación', 'abrir facturacion', 'gestionar plan'],
+        exact: ['facturación', 'facturacion'],
+      },
+      fr: {
+        includes: ['ouvrir facturation', 'gérer abonnement', 'gerer abonnement'],
+        exact: ['facturation'],
+      },
+      de: {
+        includes: ['abrechnung öffnen', 'abo verwalten'],
+        exact: ['abrechnung'],
+      },
+      ur: {
+        includes: ['بلنگ کھولیں'],
+        exact: ['بلنگ'],
+      },
+      ar: {
+        includes: ['افتح الفواتير', 'إدارة الخطة'],
+        exact: ['الفواتير'],
+      },
+    },
+  },
+]
+
+function normalize(text: string): string {
+  return text.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, '')
+}
+
+function matchesPhraseSet(norm: string, set: PhraseSet): boolean {
+  return (set.exact ?? []).some((p) => norm === p) || (set.includes ?? []).some((p) => norm.includes(p))
+}
+
+/**
+ * Parse a speech-recognition transcript into an app command.
+ *
+ * Locale-aware: when `locale` is provided, only phrase sets for that locale
+ * (plus English as a fallback) are considered. Without a locale every
+ * language is matched.
+ */
+export function parseVoiceCommand(text: string, locale?: string): MatchedCommand | null {
+  const norm = normalize(text)
+  if (!norm) return null
+
+  const langs =
+    locale && (SUPPORTED_LOCALES as readonly string[]).includes(locale)
+      ? [locale, 'en']
+      : [...SUPPORTED_LOCALES]
+
+  for (const def of COMMANDS) {
+    for (const lang of langs) {
+      const set = def.phrases[lang as keyof CommandDef['phrases']]
+      if (set && matchesPhraseSet(norm, set)) {
+        return {
+          commandId: def.id,
+          action: def.action,
+          path: def.path,
+          actionType: def.actionType,
+          pathHint: def.pathHint,
+          label: def.label,
+          labelKey: def.labelKey,
+          confirm: def.confirm,
+        }
+      }
     }
   }
-
-  // 2. Stop recording
-  if (
-    norm.includes('stop recording') ||
-    norm.includes('end recording') ||
-    norm.includes('stop record') ||
-    norm.includes('detener grabación') ||
-    norm.includes('detener grabacion') ||
-    norm.includes('parar grabación') ||
-    norm.includes('parar grabacion') ||
-    norm.includes('arrêter l\'enregistrement') ||
-    norm.includes('arreter l\'enregistrement') ||
-    norm.includes('arrêter lenregistrement') ||
-    norm.includes('stopper l\'enregistrement') ||
-    norm.includes('aufnahme stoppen') ||
-    norm.includes('aufnahme beenden') ||
-    norm.includes('recording roko') ||
-    norm.includes('recording stop') ||
-    norm.includes('ریکارڈنگ روکیں') ||
-    norm.includes('أوقف التسجيل') ||
-    norm.includes('اوقف التسجيل') ||
-    norm.includes('وقف التسجيل')
-  ) {
-    return {
-      commandId: 'stop-recording',
-      action: 'voice-action',
-      actionType: 'stop-recording',
-      label: 'Stop recording',
-    }
-  }
-
-  // 3. Export to Notion
-  if (
-    norm.includes('export to notion') ||
-    norm.includes('send to notion') ||
-    norm.includes('notion export') ||
-    norm.includes('exportar a notion') ||
-    norm.includes('enviar a notion') ||
-    norm.includes('exporter vers notion') ||
-    norm.includes('exporter a notion') ||
-    norm.includes('envoyer à notion') ||
-    norm.includes('envoyer a notion') ||
-    norm.includes('nach notion exportieren') ||
-    norm.includes('an notion senden') ||
-    norm.includes('notion export') ||
-    norm.includes('نویشن میں ایکسپورٹ') ||
-    norm.includes('تصدير إلى نوشن') ||
-    norm.includes('تصدير الى نوشن') ||
-    norm === 'notion' ||
-    norm === 'نوشن' ||
-    norm === 'نویشن'
-  ) {
-    return {
-      commandId: 'export-notion',
-      action: 'voice-action',
-      actionType: 'export-notion',
-      pathHint: '/app/editor',
-      label: 'Export to Notion',
-    }
-  }
-
-  // 4. Open Memory
-  if (
-    norm.includes('open memory') ||
-    norm.includes('go to memory') ||
-    norm.includes('view memory') ||
-    norm.includes('abrir memoria') ||
-    norm.includes('ver memoria') ||
-    norm.includes('ir a memoria') ||
-    norm.includes('ouvrir mémoire') ||
-    norm.includes('ouvrir memoire') ||
-    norm.includes('voir mémoire') ||
-    norm.includes('voir memoire') ||
-    norm.includes('aller à mémoire') ||
-    norm.includes('aller a memoire') ||
-    norm.includes('speicher öffnen') ||
-    norm.includes('speicher anzeigen') ||
-    norm.includes('gehe zu speicher') ||
-    norm.includes('memory kholo') ||
-    norm.includes('میموری کھولیں') ||
-    norm.includes('افتح الذاكرة') ||
-    norm === 'memory' ||
-    norm === 'memoria' ||
-    norm === 'mémoire' ||
-    norm === 'memoire' ||
-    norm === 'speicher' ||
-    norm === 'میموری' ||
-    norm === 'الذاكرة'
-  ) {
-    return {
-      commandId: 'open-memory',
-      action: 'navigate',
-      path: '/app/memory',
-      label: 'Open Memory',
-    }
-  }
-
-  // 5. Open Settings
-  if (
-    norm.includes('open settings') ||
-    norm.includes('go to settings') ||
-    norm.includes('abrir configuración') ||
-    norm.includes('abrir configuracion') ||
-    norm.includes('ouvrir paramètres') ||
-    norm.includes('ouvrir parametres') ||
-    norm.includes('einstellungen öffnen') ||
-    norm.includes('settings kholo') ||
-    norm.includes('ترتیبات کھولیں') ||
-    norm.includes('افتح الإعدادات') ||
-    norm.includes('افتح الاعدادات') ||
-    norm === 'settings' ||
-    norm === 'configuración' ||
-    norm === 'configuracion' ||
-    norm === 'paramètres' ||
-    norm === 'parametres' ||
-    norm === 'einstellungen' ||
-    norm === 'ترتیبات' ||
-    norm === 'الإعدادات' ||
-    norm === 'الاعدادات'
-  ) {
-    return {
-      commandId: 'open-settings',
-      action: 'navigate',
-      path: '/app/settings',
-      label: 'Open Settings',
-    }
-  }
-
-  // 6. Open Atelier
-  if (
-    norm.includes('open atelier') ||
-    norm.includes('abrir atelier') ||
-    norm.includes('ouvrir atelier') ||
-    norm.includes('atelier öffnen') ||
-    norm.includes('atelier kholo') ||
-    norm.includes('اٹیلیئر کھولیں') ||
-    norm.includes('افتح المرسم') ||
-    norm.includes('افتح اتيليه') ||
-    norm.includes('افتح أتيليه') ||
-    norm === 'atelier' ||
-    norm === 'اٹیلیئر' ||
-    norm === 'المرسم' ||
-    norm === 'أتيليه' ||
-    norm === 'اتيليه'
-  ) {
-    return {
-      commandId: 'open-atelier',
-      action: 'navigate',
-      path: '/app/atelier',
-      label: 'Open Atelier',
-    }
-  }
-
-  // 7. Open Voice Twin
-  if (
-    norm.includes('open voice twin') ||
-    norm.includes('abrir voice twin') ||
-    norm.includes('ouvrir voice twin') ||
-    norm.includes('voice twin öffnen') ||
-    norm.includes('voice twin kholo') ||
-    norm.includes('وائس ٹوئن کھولیں') ||
-    norm.includes('افتح توأم الصوت') ||
-    norm.includes('افتح توام الصوت') ||
-    norm.includes('voice twin') ||
-    norm.includes('وائس ٹوئن') ||
-    norm.includes('توأم الصوت') ||
-    norm.includes('توام الصوت')
-  ) {
-    return {
-      commandId: 'open-voice-twin',
-      action: 'navigate',
-      path: '/app/voice-twin',
-      label: 'Open Voice Twin',
-    }
-  }
-
-  // 8. Open Documents
-  if (
-    norm.includes('open documents') ||
-    norm.includes('go to documents') ||
-    norm.includes('abrir documentos') ||
-    norm.includes('ouvrir documents') ||
-    norm.includes('dokumente öffnen') ||
-    norm.includes('documents kholo') ||
-    norm.includes('دستاویزات کھولیں') ||
-    norm.includes('افتح المستندات') ||
-    norm === 'documents' ||
-    norm === 'documentos' ||
-    norm === 'dokumente' ||
-    norm === 'دستاویزات' ||
-    norm === 'المستندات'
-  ) {
-    return {
-      commandId: 'open-documents',
-      action: 'navigate',
-      path: '/app/documents',
-      label: 'Open Documents',
-    }
-  }
-
-  // 9. Open Trust / Compliance
-  if (
-    norm.includes('open trust') ||
-    norm.includes('open compliance') ||
-    norm.includes('abrir confianza') ||
-    norm.includes('abrir cumplimiento') ||
-    norm.includes('ouvrir confiance') ||
-    norm.includes('ouvrir conformité') ||
-    norm.includes('ouvrir conformite') ||
-    norm.includes('vertrauen öffnen') ||
-    norm.includes('trust kholo') ||
-    norm.includes('ٹرسٹ کھولیں') ||
-    norm.includes('افتح الثقة') ||
-    norm === 'trust' ||
-    norm === 'compliance' ||
-    norm === 'confianza' ||
-    norm === 'cumplimiento' ||
-    norm === 'confiance' ||
-    norm === 'conformité' ||
-    norm === 'conformite' ||
-    norm === 'ٹرسٹ' ||
-    norm === 'الثقة'
-  ) {
-    return {
-      commandId: 'open-compliance',
-      action: 'navigate',
-      path: '/app/compliance',
-      label: 'Open Trust',
-    }
-  }
-
   return null
 }

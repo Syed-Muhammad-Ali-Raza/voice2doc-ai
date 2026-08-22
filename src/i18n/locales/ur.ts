@@ -129,5 +129,13 @@ export const ur: MessageTree = {
     commandRecognized: 'کمانڈ کی شناخت ہو گئی: "{{command}}"',
     commandNotRecognized: 'کمانڈ کی شناخت نہیں ہو سکی: "{{phrase}}"',
     openDocToExport: 'براہ کرم نویشن میں ایکسپورٹ کرنے کے لیے ایک دستاویز کھولیں۔',
+    cmdStartRecording: 'ریکارڈنگ شروع کریں',
+    cmdStopRecording: 'ریکارڈنگ روکیں',
+    cmdExportNotion: 'نویشن میں ایکسپورٹ کریں',
+    confirmTitle: 'کیا آپ نے "{{command}}" کہا؟',
+    confirmYes: 'تصدیق کریں',
+    confirmNo: 'منسوخ کریں',
+    commandCancelled: 'صوتی کمانڈ منسوخ کر دی گئی۔',
+    keepListening: 'کمانڈز سنتے رہیں',
   },
 }

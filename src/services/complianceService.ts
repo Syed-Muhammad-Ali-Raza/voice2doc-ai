@@ -90,21 +90,21 @@ export const complianceService = {
     }, base())
   },
 
-  logVoiceCommand: async (command: string) => {
+  logVoiceCommand: async (command: string, status: 'executed' | 'cancelled' = 'executed') => {
     if (env.useMockApi || !getToken()) {
       demoAudit.unshift({
         id: 'a' + Math.random().toString(36).slice(2, 10),
         action: 'ui.voice_command',
         resourceType: null,
         resourceId: null,
-        meta: { command },
+        meta: { command, status },
         createdAt: new Date().toISOString(),
       })
       return { ok: true }
     }
     return apiFetch<{ ok: boolean }>(
       '/compliance/log-voice-command',
-      { method: 'POST', body: JSON.stringify({ command }) },
+      { method: 'POST', body: JSON.stringify({ command, status }) },
       base(),
     )
   },

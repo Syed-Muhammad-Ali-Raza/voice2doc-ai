@@ -129,5 +129,13 @@ export const ar: MessageTree = {
     commandRecognized: 'تم التعرف على الأمر: "{{command}}"',
     commandNotRecognized: 'لم يتم التعرف على الأمر: "{{phrase}}"',
     openDocToExport: 'يرجى فتح مستند لتصديره إلى نوشن.',
+    cmdStartRecording: 'ابدأ التسجيل',
+    cmdStopRecording: 'أوقف التسجيل',
+    cmdExportNotion: 'تصدير إلى نوشن',
+    confirmTitle: 'هل قلت "{{command}}"؟',
+    confirmYes: 'تأكيد',
+    confirmNo: 'إلغاء',
+    commandCancelled: 'تم إلغاء الأمر الصوتي.',
+    keepListening: 'الاستمرار في الاستماع للأوامر',
   },
 }

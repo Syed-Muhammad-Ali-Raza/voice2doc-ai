@@ -307,12 +307,15 @@ Learn a personal writing voice from past documents and apply as living Tone DNA:
 - UI: `/app/voice-twin` + editor apply button
 - Unit tests: `src/lib/voiceTwin.test.ts`
 
-### Phase 14 — Speak-the-UI (planned)
-Expand Voice Guide into voice-controlled navigation:
+### Phase 14 — Speak-the-UI (complete)
+Voice Guide expanded into full voice-controlled navigation:
 
-- “Open Memory”, “Start recording”, “Export to Notion”
-- Locale-aware speech recognition + confirmation toasts
-- Respect compliance audit for voice commands
+- Locale-aware recognition: per-locale phrase sets (`en`/`es`/`fr`/`de`/`ur`/`ar`) with English fallback; recognizer `lang` follows the Phase 6 locale preference
+- Commands: navigation ("Open Memory", "Go home", "Open billing", "Open integrations", …), recording control ("Start/Stop recording"), export ("Export to Notion")
+- Confirmation cards for impactful commands (stop recording, Notion export) with auto-dismiss; cancellations are audited too
+- Continuous **Keep listening** mode for hands-free command chains
+- Audit: recognized commands logged as `ui.voice_command` (with `executed`/`cancelled` status) via `POST /api/compliance/log-voice-command`
+- Unit tests: `src/lib/speechRecognition.test.ts`
 
 ### Public legal & support surfaces
 - `/privacy` — Privacy Policy (collection, audio, integrations, rights)
