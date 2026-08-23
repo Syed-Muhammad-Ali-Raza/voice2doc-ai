@@ -59,7 +59,7 @@ npm test
 
 Open the **Voice guide** (headphones button, bottom-right) → **Voice Navigation**:
 
-1. Tap **Start Voice Control** and speak — recognition follows your UI language (English phrases always work too).
+1. Tap **Start Voice Control** and speak  recognition follows your UI language (English phrases always work too).
 2. Navigate hands-free: "Open Memory", "Go home", "Open billing", "Open integrations", …
 3. Control recording: "Start recording" / "Stop recording".
 4. Export: open a document, then say "Export to Notion".
