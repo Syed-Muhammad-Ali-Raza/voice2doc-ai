@@ -1,0 +1,16 @@
+{
+  "recommendations": {
+    "extensions": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode"
+    ]
+  },
+  "settings": {
+    "chat.useAgentsMdFile": true,
+    "chat.useNestedAgentsMdFiles": true,
+    "chat.agentSkillsLocations": [
+      ".github/skills",
+      ".agents/skills"
+    ]
+  }
+}
