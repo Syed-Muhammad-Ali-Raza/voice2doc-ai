@@ -10,7 +10,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "sync:skills": "node scripts/sync-agent-skills.mjs"
   },
   "dependencies": {
     "@tiptap/extension-placeholder": "^3.0.0",
