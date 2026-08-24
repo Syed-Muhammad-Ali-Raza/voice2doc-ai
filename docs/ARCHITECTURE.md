@@ -309,7 +309,7 @@ Measure how much spoken intent survived into the finished document:
 - UI: `EchoScorePanel` on the editor page
 - Unit tests: `src/lib/echoScore.test.ts`
 
-### Phase 13 — Voice Twin (current)
+### Phase 13 — Voice Twin (complete)
 Learn a personal writing voice from past documents and apply as living Tone DNA:
 
 - Train from selected docs and optional Memory decision titles
@@ -330,6 +330,32 @@ Voice Guide expanded into full voice-controlled navigation:
 - Continuous **Keep listening** mode for hands-free command chains
 - Audit: recognized commands logged as `ui.voice_command` (with `executed`/`cancelled` status) via `POST /api/compliance/log-voice-command`
 - Unit tests: `src/lib/speechRecognition.test.ts`
+
+### Phase 15 — Studio Pulse (complete)
+Smart studio briefing synthesized from live activity:
+
+- Aggregates docs updated this week, open memory actions/threads, low Echo Score alerts, voice command usage
+- Prioritized focus list with deep links to editor, Memory, and Trust
+- Dashboard compact card + full `/app/pulse` page with refresh
+- API: `GET /api/pulse`, `POST /api/pulse/refresh` (refresh audited as `pulse.refresh`)
+- Pure helpers: `src/lib/studioPulse.ts` (mirrored in `server/src/lib/studioPulseGraph.ts`)
+- UI: `StudioPulseCard`, `PulsePage`, dashboard widget
+- Voice nav: "Open Studio Pulse" / "Open pulse"
+- Unit tests: `src/lib/studioPulse.test.ts`
+
+### Phase 16 — Studio Recipes (current)
+Workflow automations triggered by studio events:
+
+- Triggers: job completed, Echo Score below threshold, meeting memory ingested, manual run
+- Actions: refresh Studio Pulse, recompute Echo Score, write compliance audit entry
+- Starter recipes seeded per user; CRUD via `/app/recipes`
+- Hook points: `pipeline.ts` (job.completed), `echo.ts` (echo.low), integrations import (memory.ingested)
+- Tables: `studio_recipes`, `recipe_runs`
+- API: `GET/POST/PATCH/DELETE /api/recipes`, `POST /api/recipes/:id/run`, `GET /api/recipes/runs`
+- Compliance: export/wipe includes recipes; runs audited as `recipe.run`
+- UI: `RecipesPage`, `RecipeRunLog`
+- Voice nav: "Open recipes" / "Open studio recipes"
+- Unit tests: `src/lib/studioRecipes.test.ts`
 
 ### Public legal & support surfaces
 - `/privacy` — Privacy Policy (collection, audio, integrations, rights)

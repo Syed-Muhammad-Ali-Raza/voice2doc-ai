@@ -20,6 +20,8 @@ import {
   Wand2,
   Shield,
   Fingerprint,
+  Activity,
+  Zap,
 } from 'lucide-react'
 import { BrandWordmark } from './Brand'
 import { Toast } from './Toast'
@@ -48,6 +50,8 @@ export function AppShell() {
     { to: '/app/memory', label: t('nav.memory'), icon: Brain },
     { to: '/app/atelier', label: t('nav.atelier'), icon: Wand2 },
     { to: '/app/voice-twin', label: t('nav.voiceTwin'), icon: Fingerprint },
+    { to: '/app/pulse', label: t('nav.pulse'), icon: Activity },
+    { to: '/app/recipes', label: t('nav.recipes'), icon: Zap },
     { to: '/app/compliance', label: t('nav.compliance'), icon: Shield },
     { to: '/app/billing', label: t('nav.billing'), icon: CreditCard },
     { to: '/app/settings', label: t('nav.settings'), icon: Settings },

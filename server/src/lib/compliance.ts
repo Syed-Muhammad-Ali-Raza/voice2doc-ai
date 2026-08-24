@@ -232,6 +232,17 @@ export function exportUserData(userId: string) {
        FROM voice_twins WHERE user_id = ?`,
     )
     .all(userId)
+  const studioRecipes = db
+    .prepare(
+      `SELECT id, name, enabled, trigger, trigger_config_json, actions_json, created_at, updated_at
+       FROM studio_recipes WHERE user_id = ?`,
+    )
+    .all(userId)
+  const recipeRuns = db
+    .prepare(
+      `SELECT id, recipe_id, trigger, status, result_json, created_at FROM recipe_runs WHERE user_id = ? ORDER BY created_at DESC LIMIT 100`,
+    )
+    .all(userId)
   writeAudit(userId, 'compliance.data_exported', { meta: { documentCount: documents.length } })
 
   return {
@@ -252,6 +263,8 @@ export function exportUserData(userId: string) {
     integrations,
     echoScores,
     voiceTwins,
+    studioRecipes,
+    recipeRuns,
     audit,
   }
 }
@@ -301,6 +314,8 @@ export function wipeUserContent(userId: string) {
   ).run(userId)
   db.prepare(`DELETE FROM memory_threads WHERE user_id = ?`).run(userId)
   db.prepare(`DELETE FROM memory_meetings WHERE user_id = ?`).run(userId)
+  db.prepare(`DELETE FROM recipe_runs WHERE user_id = ?`).run(userId)
+  db.prepare(`DELETE FROM studio_recipes WHERE user_id = ?`).run(userId)
 
   writeAudit(userId, 'compliance.content_wiped', { meta: { keepAccount: true } })
   return { ok: true as const }

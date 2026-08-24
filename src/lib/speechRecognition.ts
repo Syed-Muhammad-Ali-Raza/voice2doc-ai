@@ -11,6 +11,8 @@ export type VoiceCommandId =
   | 'open-memory'
   | 'open-atelier'
   | 'open-voice-twin'
+  | 'open-pulse'
+  | 'open-recipes'
   | 'open-compliance'
   | 'open-settings'
   | 'open-billing'
@@ -413,6 +415,62 @@ const COMMANDS: CommandDef[] = [
       },
       ar: {
         includes: ['افتح توأم الصوت', 'افتح توام الصوت', 'توأم الصوت', 'توام الصوت'],
+      },
+    },
+  },
+  {
+    id: 'open-pulse',
+    action: 'navigate',
+    path: '/app/pulse',
+    label: 'Open Studio Pulse',
+    labelKey: 'nav.pulse',
+    phrases: {
+      en: {
+        includes: ['open studio pulse', 'open pulse', 'studio pulse'],
+        exact: ['pulse'],
+      },
+      es: {
+        includes: ['abrir studio pulse', 'abrir pulso'],
+      },
+      fr: {
+        includes: ['ouvrir studio pulse', 'ouvrir le pulse'],
+      },
+      de: {
+        includes: ['studio pulse öffnen', 'pulse öffnen'],
+      },
+      ur: {
+        includes: ['studio pulse kholo', 'pulse kholo', 'اسٹوڈیو پلس کھولیں'],
+      },
+      ar: {
+        includes: ['افتح ستوديو بولس', 'افتح البلس', 'ستوديو بولس'],
+      },
+    },
+  },
+  {
+    id: 'open-recipes',
+    action: 'navigate',
+    path: '/app/recipes',
+    label: 'Open Recipes',
+    labelKey: 'nav.recipes',
+    phrases: {
+      en: {
+        includes: ['open recipes', 'open studio recipes', 'studio recipes'],
+        exact: ['recipes'],
+      },
+      es: {
+        includes: ['abrir recetas'],
+      },
+      fr: {
+        includes: ['ouvrir recettes'],
+      },
+      de: {
+        includes: ['rezepte öffnen'],
+      },
+      ur: {
+        includes: ['recipes kholo', 'ریسیپی کھولیں'],
+      },
+      ar: {
+        includes: ['افتح الوصفات', 'الوصفات'],
       },
     },
   },
