@@ -67,6 +67,20 @@ flowchart LR
 
 **Rule of thumb:** pages talk to stores + services; services own async work; config owns product rules (limits, plan perks).
 
+### 3.1 Agent skills (cross-IDE)
+
+Canonical skills: `.agents/skills/<name>/SKILL.md` (Agent Skills open standard).
+
+| IDE | Project path |
+|-----|--------------|
+| Cursor | `.cursor/skills/` (mirror) + native `.agents/skills/` |
+| VS Code / Copilot | `.github/skills/` (mirror) |
+| Windsurf | `.windsurf/skills/` (mirror) |
+| OpenCode | `.opencode/skills/` + `opencode.json` permissions |
+| Antigravity | `.agents/skills/` (+ `.agent/skills/` legacy mirror) |
+
+Sync mirrors: `npm run sync:skills`. Always-on instructions: root `AGENTS.md`.
+
 ---
 
 ## 4. Core user flows

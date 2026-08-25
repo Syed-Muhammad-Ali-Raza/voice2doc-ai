@@ -22,7 +22,27 @@ npm run dev
 
 ```bash
 npm test
+npm run sync:skills   # after editing .agents/skills/
 ```
+
+---
+
+## Agent skills (Cursor, VS Code, Windsurf, OpenCode, Antigravity)
+
+Cross-IDE agent skills use the open **Agent Skills** format (`SKILL.md` per folder).
+
+| Role | Path |
+|------|------|
+| **Canonical source** | `.agents/skills/` |
+| Cursor | `.cursor/skills/` (mirror) |
+| VS Code / Copilot | `.github/skills/` (mirror) |
+| Windsurf | `.windsurf/skills/` (mirror) |
+| OpenCode | `.opencode/skills/` + `opencode.json` |
+| Antigravity | `.agents/skills/` (+ legacy `.agent/skills/` mirror) |
+
+Always-on repo context: [`AGENTS.md`](AGENTS.md). Details: [`.agents/README.md`](.agents/README.md).
+
+Bundled skills: `voice2doc-phase-delivery`, `voice2doc-stack-patterns`, `voice2doc-testing`, `voice2doc-i18n-theme`.
 
 ---
 
