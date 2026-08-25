@@ -29,6 +29,8 @@ import { MemoryPage } from './pages/MemoryPage'
 import { AtelierPage } from './pages/AtelierPage'
 import { CompliancePage } from './pages/CompliancePage'
 import { VoiceTwinPage } from './pages/VoiceTwinPage'
+import { PulsePage } from './pages/PulsePage'
+import { RecipesPage } from './pages/RecipesPage'
 
 export default function App() {
   return (
@@ -62,6 +64,8 @@ export default function App() {
             <Route path="memory" element={<MemoryPage />} />
             <Route path="atelier" element={<AtelierPage />} />
             <Route path="voice-twin" element={<VoiceTwinPage />} />
+            <Route path="pulse" element={<PulsePage />} />
+            <Route path="recipes" element={<RecipesPage />} />
             <Route path="compliance" element={<CompliancePage />} />
             <Route path="billing" element={<BillingPage />} />
             <Route path="settings" element={<SettingsPage />} />
