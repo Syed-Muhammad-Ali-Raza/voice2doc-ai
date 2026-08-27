@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { FilePlus2, Mic, Upload } from 'lucide-react'
 import { GlassCard } from '../components/GlassCard'
+import { StudioPulseCard } from '../components/StudioPulseCard'
 import { FREE_DOCUMENT_LIMIT, trialsRemaining } from '../lib/trials'
 import { useAuthStore, useSettingsStore } from '../store/auth'
 import { useDocsStore } from '../store/docs'
@@ -52,6 +53,8 @@ export function DashboardPage() {
           <p className="mt-1 text-sm text-muted">Start writing from scratch.</p>
         </button>
       </div>
+
+      <StudioPulseCard compact />
 
       <div className="grid gap-4 lg:grid-cols-3">
         <GlassCard className="space-y-4 p-5 lg:col-span-2">

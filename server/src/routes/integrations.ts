@@ -340,6 +340,16 @@ integrationsRouter.post('/:provider/import-meeting', (req: AuthedRequest, res) =
     console.error('Memory ingest skipped', err)
   }
 
+  if (memory) {
+    void import('../lib/studioRecipes.js').then(({ dispatchRecipeEvent }) =>
+      dispatchRecipeEvent(req.user!.sub, {
+        type: 'memory.ingested',
+        meetingId: memory!.meetingId,
+        documentId: id,
+      }),
+    )
+  }
+
   res.status(201).json({
     ok: true,
     provider,

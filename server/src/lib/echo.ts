@@ -122,6 +122,14 @@ export function upsertEchoScore(opts: {
     meta: { score: computed.score, lost: computed.lostPhrases.length },
   })
 
+  void import('./studioRecipes.js').then(({ dispatchRecipeEvent }) =>
+    dispatchRecipeEvent(opts.userId, {
+      type: 'echo.low',
+      documentId: opts.documentId,
+      score: computed.score,
+    }),
+  )
+
   return getEchoScore(opts.userId, opts.documentId)!
 }
 

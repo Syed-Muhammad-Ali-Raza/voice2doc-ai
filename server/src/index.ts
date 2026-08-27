@@ -33,6 +33,9 @@ import { migrateVoiceTwinTables } from './lib/voiceTwin.js'
 import { voiceTwinRouter } from './routes/voiceTwin.js'
 import { migrateComplianceTables } from './lib/compliance.js'
 import { complianceRouter } from './routes/compliance.js'
+import { pulseRouter } from './routes/pulse.js'
+import { migrateRecipeTables } from './lib/studioRecipes.js'
+import { recipesRouter } from './routes/recipes.js'
 import { workspacesRouter } from './routes/workspaces.js'
 
 migrateBillingColumns()
@@ -46,6 +49,7 @@ migrateChatTables()
 migrateEchoTables()
 migrateVoiceTwinTables()
 migrateComplianceTables()
+migrateRecipeTables()
 
 const PORT = Number(process.env.PORT || 3001)
 const app = express()
@@ -80,7 +84,7 @@ app.get('/api/health', (_req, res) => {
   res.json({
     ok: true,
     service: 'voice2doc-api',
-    phase: 14,
+    phase: 16,
     openai: Boolean(process.env.OPENAI_API_KEY),
     stripe: isStripeConfigured(),
     teams: true,
@@ -93,6 +97,8 @@ app.get('/api/health', (_req, res) => {
     echo: true,
     voiceTwin: true,
     compliance: true,
+    pulse: true,
+    recipes: true,
   })
 })
 
@@ -119,6 +125,8 @@ app.use('/api/chat', chatRouter)
 app.use('/api/echo', echoRouter)
 app.use('/api/voice-twins', voiceTwinRouter)
 app.use('/api/compliance', complianceRouter)
+app.use('/api/pulse', pulseRouter)
+app.use('/api/recipes', recipesRouter)
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err)
@@ -131,6 +139,6 @@ attachCollabWebSocket(server)
 
 server.listen(PORT, () => {
   console.log(
-    `Voice2Doc API listening on http://localhost:${PORT} (phase 13, collab ws=/ws/collab, stripe=${isStripeConfigured()})`,
+    `Voice2Doc API listening on http://localhost:${PORT} (phase 16, collab ws=/ws/collab, stripe=${isStripeConfigured()})`,
   )
 })

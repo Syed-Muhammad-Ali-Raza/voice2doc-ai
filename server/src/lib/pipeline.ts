@@ -237,6 +237,13 @@ export async function runJobPipeline(jobId: string) {
         draftHtml: formatted.content,
         jobId,
       })
+      void import('./studioRecipes.js').then(({ dispatchRecipeEvent }) =>
+        dispatchRecipeEvent(job.user_id, {
+          type: 'job.completed',
+          documentId: docId,
+          jobId,
+        }),
+      )
     } catch {
       /* echo score is non-blocking */
     }

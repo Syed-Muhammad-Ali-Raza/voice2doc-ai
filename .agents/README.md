@@ -44,6 +44,8 @@ Root [`AGENTS.md`](../AGENTS.md) applies to VS Code, Cursor, Windsurf, OpenCode,
 | Skill | Use when |
 |-------|----------|
 | `voice2doc-phase-delivery` | Implementing the next product phase |
+| `voice2doc-frontend` | React UI, services, routes, i18n |
+| `voice2doc-backend` | Express API, migrations, server lib |
 | `voice2doc-stack-patterns` | Frontend/backend module layout & API conventions |
 | `voice2doc-testing` | Adding Vitest coverage for pure helpers |
 | `voice2doc-i18n-theme` | Locales, RTL, Studio Glass theme tokens |

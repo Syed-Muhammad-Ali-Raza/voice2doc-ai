@@ -4,7 +4,7 @@ import { ChevronDown, LifeBuoy, Mail, Mic, Plug, Settings2 } from 'lucide-react'
 import { GlassCard } from '../components/GlassCard'
 import { useT } from '../i18n/useT'
 
-const FAQ_IDS = ['start', 'record', 'language', 'theme', 'integrations', 'billing', 'privacy', 'chatbot', 'echo', 'voiceTwin'] as const
+const FAQ_IDS = ['start', 'record', 'language', 'theme', 'integrations', 'billing', 'privacy', 'chatbot', 'echo', 'voiceTwin', 'pulse', 'recipes'] as const
 
 const TOPICS = [
   { id: 'gettingStarted', to: '/register', icon: LifeBuoy },

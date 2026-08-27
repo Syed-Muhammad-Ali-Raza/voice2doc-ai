@@ -47,6 +47,8 @@ When implementing a phase:
 Load skills from `.agents/skills/` (or IDE mirrors). Prefer:
 
 - `voice2doc-phase-delivery` — end-to-end phase workflow
+- `voice2doc-frontend` — React pages, services, routing, i18n
+- `voice2doc-backend` — Express routes, migrations, API wiring
 - `voice2doc-stack-patterns` — file placement & API shapes
 - `voice2doc-testing` — Vitest patterns
 - `voice2doc-i18n-theme` — localization & theming

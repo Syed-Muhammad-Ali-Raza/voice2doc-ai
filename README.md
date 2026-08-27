@@ -2,7 +2,7 @@
 
 **Turn voice notes into professional documents in seconds.**
 
-**Phase 14 (current):** Speak-the-UI — voice-controlled navigation with locale-aware commands and confirmation toasts.
+**Phase 16 (current):** Studio Recipes — automate Pulse, Echo, and audit actions on studio events.
 
 ---
 
@@ -42,7 +42,7 @@ Cross-IDE agent skills use the open **Agent Skills** format (`SKILL.md` per fold
 
 Always-on repo context: [`AGENTS.md`](AGENTS.md). Details: [`.agents/README.md`](.agents/README.md).
 
-Bundled skills: `voice2doc-phase-delivery`, `voice2doc-stack-patterns`, `voice2doc-testing`, `voice2doc-i18n-theme`.
+Bundled skills: `voice2doc-phase-delivery`, `voice2doc-frontend`, `voice2doc-backend`, `voice2doc-stack-patterns`, `voice2doc-testing`, `voice2doc-i18n-theme`.
 
 ---
 
@@ -60,7 +60,9 @@ Bundled skills: `voice2doc-phase-delivery`, `voice2doc-stack-patterns`, `voice2d
 | 11 Studio AI Chatbot | Done | In-app assistant for docs & help |
 | 12 Echo Score | Done | Spoken-intent vs draft fidelity |
 | 13 Voice Twin | Done | Personal writing voice from past docs |
-| **14 Speak-the-UI** | **Current** | Voice-controlled navigation |
+| 14 Speak-the-UI | Done | Voice-controlled navigation |
+| 15 Studio Pulse | Done | Smart studio briefing dashboard |
+| **16 Studio Recipes** | **Current** | Workflow automations on studio events |
 
 ---
 
@@ -72,6 +74,61 @@ Bundled skills: `voice2doc-phase-delivery`, `voice2doc-stack-patterns`, `voice2d
 | Pro | $19 | Unlimited AI, Atelier, Memory |
 | Business | $49 | Teams, live collab, audit preview |
 | **Enterprise** | **$149** | Compliance Vault, retention, export/wipe |
+
+---
+
+## Phase 16 — Studio Recipes
+
+Open **Recipes** in the sidebar (or say "Open recipes" via voice nav):
+
+1. Three **starter recipes** seed on first visit (job finish, low Echo, meeting import).
+2. Create custom recipes: pick a **trigger** → select **actions** → save.
+3. Recipes fire automatically on pipeline events, Echo updates, and meeting imports.
+4. **Run now** for manual tests; recent runs show success/partial/failed status.
+5. Every run is audited (`recipe.run`).
+
+**Triggers:** `job.completed`, `echo.low` (configurable threshold), `memory.ingested`, `manual`
+
+**Actions:** refresh Studio Pulse, recompute Echo Score, write audit entry
+
+### API
+
+| Method | Path |
+|--------|------|
+| GET | `/api/recipes` |
+| POST | `/api/recipes` |
+| PATCH | `/api/recipes/:id` |
+| DELETE | `/api/recipes/:id` |
+| POST | `/api/recipes/:id/run` |
+| GET | `/api/recipes/runs` |
+
+### Unit tests
+
+Pure recipe validation in `src/lib/studioRecipes.ts`. Run `npm test`.
+
+---
+
+## Phase 15 — Studio Pulse
+
+Open **Studio Pulse** in the sidebar (or say "Open Studio Pulse" via voice nav):
+
+1. Dashboard shows a compact **Studio Pulse** card with headline + top focus items.
+2. Full brief at `/app/pulse` — stats, prioritized actions, Echo alerts, recent docs.
+3. Tap **Refresh** to recompute from live data (audited as `pulse.refresh`).
+4. Focus items link to Memory threads, editor drafts, or Trust audit.
+
+Aggregates: docs updated this week, open memory actions/threads, Echo Score &lt; 70, voice command count.
+
+### API
+
+| Method | Path |
+|--------|------|
+| GET | `/api/pulse` |
+| POST | `/api/pulse/refresh` |
+
+### Unit tests
+
+Pure briefing logic in `src/lib/studioPulse.ts`. Run `npm test`.
 
 ---
 
