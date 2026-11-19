@@ -3,6 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import OpenAI, { toFile } from 'openai'
 import { db, uploadsDir } from '../db.js'
+import { openAIOptions } from './openaiClient.js'
 import { generateDocumentHtml } from './generateDoc.js'
 import { upsertEchoScore } from './echo.js'
 
@@ -58,7 +59,7 @@ function updateJob(
 async function transcribeAudio(filePath: string, language: string): Promise<{ text: string; provider: string }> {
   const apiKey = process.env.OPENAI_API_KEY
   if (apiKey) {
-    const openai = new OpenAI({ apiKey })
+    const openai = new OpenAI(openAIOptions(apiKey))
     const langHint: Record<string, string> = {
       English: 'en',
       Spanish: 'es',
@@ -93,7 +94,7 @@ async function formatWithLlm(input: {
 }): Promise<{ title: string; content: string; provider: string }> {
   const apiKey = process.env.OPENAI_API_KEY
   if (apiKey) {
-    const openai = new OpenAI({ apiKey })
+    const openai = new OpenAI(openAIOptions(apiKey))
     const completion = await openai.chat.completions.create({
       model: process.env.OPENAI_LLM_MODEL || 'gpt-4o-mini',
       messages: [

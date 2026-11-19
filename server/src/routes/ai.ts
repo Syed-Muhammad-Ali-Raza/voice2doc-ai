@@ -7,6 +7,7 @@ import { v4 as uuid } from 'uuid'
 import { db, uploadsDir } from '../db.js'
 import type { AuthedRequest } from '../middleware/auth.js'
 import { enqueueJob, STAGES } from '../lib/pipeline.js'
+import { openAIOptions } from '../lib/openaiClient.js'
 
 export const aiRouter = Router()
 
@@ -240,7 +241,7 @@ aiRouter.post('/transform', async (req, res) => {
   const apiKey = process.env.OPENAI_API_KEY
   if (apiKey) {
     const OpenAI = (await import('openai')).default
-    const openai = new OpenAI({ apiKey })
+    const openai = new OpenAI(openAIOptions(apiKey))
     const completion = await openai.chat.completions.create({
       model: process.env.OPENAI_LLM_MODEL || 'gpt-4o-mini',
       messages: [

@@ -1,6 +1,7 @@
 import { v4 as uuid } from 'uuid'
 import { db } from '../db.js'
 import { writeAudit } from './compliance.js'
+import { openAIOptions } from './openaiClient.js'
 import { canAccessDocument, requireMember } from './teams.js'
 import {
   applyVoiceTwinLocally,
@@ -224,7 +225,7 @@ export async function applyVoiceTwin(
   if (apiKey) {
     try {
       const OpenAI = (await import('openai')).default
-      const openai = new OpenAI({ apiKey })
+      const openai = new OpenAI(openAIOptions(apiKey))
       const completion = await openai.chat.completions.create({
         model: process.env.OPENAI_LLM_MODEL || 'gpt-4o-mini',
         messages: [
