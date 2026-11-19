@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import http from 'node:http'
+import fs from 'node:fs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 dotenv.config({ path: path.join(__dirname, '..', '.env') })
@@ -127,6 +128,15 @@ app.use('/api/voice-twins', voiceTwinRouter)
 app.use('/api/compliance', complianceRouter)
 app.use('/api/pulse', pulseRouter)
 app.use('/api/recipes', recipesRouter)
+
+const distDir = path.resolve(__dirname, '..', '..', 'dist')
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir))
+  app.use((req, res, next) => {
+    if (req.method !== 'GET' || req.path.startsWith('/api/') || req.path.startsWith('/ws/')) return next()
+    res.sendFile(path.join(distDir, 'index.html'))
+  })
+}
 
 app.use((err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error(err)

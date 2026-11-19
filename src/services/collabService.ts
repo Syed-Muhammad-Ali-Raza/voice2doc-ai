@@ -33,6 +33,10 @@ function base() {
 
 function wsBase() {
   const api = env.apiBaseUrl || 'http://localhost:3001/api'
+  if (api.startsWith('/')) {
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
+    return `${protocol}//${window.location.host}`
+  }
   const root = api.replace(/\/api\/?$/, '')
   return root.replace(/^http/, 'ws')
 }
